@@ -49,6 +49,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	/** Shoot Default Projectile Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ShootDefaultAction;
+
+	/** Default Projectile class to spawn */
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class ASorceryProjectile> ProjectileClass;
+
+	/** Spell offset from the characters location */
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta=(MakeEditWidget = true))
+	//FVector SpellOffset;
+
 protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -67,5 +79,8 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	/** Cast spell to shoot the Default Projectile */
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void ShootDefaultSpell();
 };
 
