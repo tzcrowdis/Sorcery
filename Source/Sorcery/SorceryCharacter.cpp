@@ -12,6 +12,7 @@
 #include "Engine/LocalPlayer.h"
 
 #include "Engine/SkeletalMeshSocket.h"
+#include "Sorcery.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -38,6 +39,27 @@ ASorceryCharacter::ASorceryCharacter()
 	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
+	// create the element wheel component
+	ElementWheel = CreateDefaultSubobject<USceneComponent>(TEXT("ElementWheel"));
+	ElementWheel->SetupAttachment(GetMesh1P());
+
+	FireElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FireElement"));
+	FireElement->SetupAttachment(ElementWheel);
+
+	ShockElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShockElement"));
+	ShockElement->SetupAttachment(ElementWheel);
+
+	IceElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("IceElement"));
+	IceElement->SetupAttachment(ElementWheel);
+
+	AcidElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AcidElement"));
+	AcidElement->SetupAttachment(ElementWheel);
+
+	// element wheel rotation values
+	EWLeftRotationValue = -90;
+	EWRightRotationValue = 90;
+	EWCurrentRotation = 0;
+	EWPreviousRotation = FRotator(0.f, 0.f, 0.f);
 }
 
 void ASorceryCharacter::BeginPlay()
@@ -65,6 +87,10 @@ void ASorceryCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 		// Default Shooting
 		EnhancedInputComponent->BindAction(ShootDefaultAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ShootDefaultSpell);
+
+		// Rotate Element Wheel
+		EnhancedInputComponent->BindAction(ElementWheelLeft, ETriggerEvent::Triggered, this, &ASorceryCharacter::QueueElementWheelLeft);
+		EnhancedInputComponent->BindAction(ElementWheelRight, ETriggerEvent::Triggered, this, &ASorceryCharacter::QueueElementWheelRight);
 	}
 	else
 	{
@@ -150,4 +176,57 @@ void ASorceryCharacter::ShootDefaultSpell()
 		}
 	}
 	*/
+}
+
+/*
+	ELEMENT WHEEL FUNCTIONS	
+*/
+void ASorceryCharacter::QueueElementWheelLeft()
+{
+	int32* peek = EWRotationQueue.Peek();
+
+	if (peek != nullptr && *peek == EWLeftRotationValue)
+	{
+		EWRotationQueue.Enqueue(EWLeftRotationValue);
+	}
+	else
+	{
+		EWRotationQueue.Empty();
+		EWRotationQueue.Enqueue(EWLeftRotationValue);
+		RotateElementWheel();
+	}
+}
+
+void ASorceryCharacter::QueueElementWheelRight()
+{
+	int32* peek = EWRotationQueue.Peek();
+	if (peek != nullptr && *peek == EWRightRotationValue)
+	{
+		EWRotationQueue.Enqueue(EWRightRotationValue);
+	}
+	else
+	{
+		EWRotationQueue.Empty();
+		EWRotationQueue.Enqueue(EWRightRotationValue);
+		RotateElementWheel();
+	}
+}
+
+bool ASorceryCharacter::ProcessElementWheelQueue()
+{
+	if (EWRotationQueue.IsEmpty())
+		return false;
+
+	EWRotationQueue.Dequeue(EWCurrentRotation);
+	EWStartRotation = ElementWheel->GetRelativeRotation();
+	EWPreviousRotation = EWStartRotation;
+	return true;
+}
+
+void ASorceryCharacter::UpdateElementWheelRotation(float NormalizedRotation)
+{
+	FRotator Rotation = EWStartRotation;
+	Rotation.Pitch = FMath::Lerp(EWStartRotation.Pitch, EWStartRotation.Pitch + EWCurrentRotation, NormalizedRotation);
+	ElementWheel->AddLocalRotation(Rotation - EWPreviousRotation);
+	EWPreviousRotation = Rotation;
 }

@@ -36,15 +36,7 @@ class ASorceryCharacter : public ACharacter
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
-	
-public:
-	ASorceryCharacter();
 
-protected:
-	virtual void BeginPlay();
-
-public:
-		
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
@@ -53,6 +45,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ShootDefaultAction;
 
+	/** Shoot Default Projectile Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ElementWheelLeft;
+
+	/** Shoot Default Projectile Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ElementWheelRight;
+	
+public:
+	ASorceryCharacter();
+
+protected:
+	virtual void BeginPlay();
+
+public:
 	/** Default Projectile class to spawn */
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class ASorceryProjectile> ProjectileClass;
@@ -60,6 +67,32 @@ public:
 	/** Spell offset from the characters location */
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta=(MakeEditWidget = true))
 	//FVector SpellOffset;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
+	USceneComponent* ElementWheel;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
+	UStaticMeshComponent* FireElement;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
+	UStaticMeshComponent* ShockElement;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
+	UStaticMeshComponent* IceElement;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
+	UStaticMeshComponent* AcidElement;
+
+protected:
+	TQueue<int32> EWRotationQueue;
+	int32 EWCurrentRotation;
+	FRotator EWStartRotation;
+	FRotator EWPreviousRotation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
+	int32 EWLeftRotationValue;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
+	int32 EWRightRotationValue;
 
 protected:
 	/** Called for movement input */
@@ -82,5 +115,19 @@ public:
 	/** Cast spell to shoot the Default Projectile */
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void ShootDefaultSpell();
+
+	/* Element Wheel Input Queue Functions */
+	void QueueElementWheelLeft();
+	void QueueElementWheelRight();
+
+	UFUNCTION(BlueprintCallable, Category = "Element Wheel")
+	bool ProcessElementWheelQueue();
+
+	/** Element Wheel Timeline Functions */
+	UFUNCTION(BlueprintImplementableEvent, Category = "Element Wheel")
+	void RotateElementWheel();
+
+	UFUNCTION(BlueprintCallable, Category = "Element Wheel")
+	void UpdateElementWheelRotation(float Rotation);
 };
 
