@@ -13,6 +13,7 @@
 
 #include "Engine/SkeletalMeshSocket.h"
 #include "Sorcery.h"
+#include "Components/SphereComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -43,29 +44,42 @@ ASorceryCharacter::ASorceryCharacter()
 	ElementWheel = CreateDefaultSubobject<USceneComponent>(TEXT("ElementWheel"));
 	ElementWheel->SetupAttachment(GetMesh1P());
 
-	FireElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FireElement"));
-	FireElement->SetupAttachment(ElementWheel);
+	SMFireElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FireElement"));
+	SMFireElement->SetupAttachment(ElementWheel);
 
-	ShockElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShockElement"));
-	ShockElement->SetupAttachment(ElementWheel);
+	SMShockElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShockElement"));
+	SMShockElement->SetupAttachment(ElementWheel);
 
-	IceElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("IceElement"));
-	IceElement->SetupAttachment(ElementWheel);
+	SMIceElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("IceElement"));
+	SMIceElement->SetupAttachment(ElementWheel);
 
-	AcidElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AcidElement"));
-	AcidElement->SetupAttachment(ElementWheel);
+	SMAcidElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AcidElement"));
+	SMAcidElement->SetupAttachment(ElementWheel);
 
 	// element wheel rotation values
 	EWLeftRotationValue = -90;
 	EWRightRotationValue = 90;
 	EWCurrentRotation = 0;
 	EWPreviousRotation = FRotator(0.f, 0.f, 0.f);
+
+	// element wheel selection of element
+	ActiveElement = EElementalType::Fire;
+	ProjectileClass = DefaultProjectile_Fire;
+
+	ElementSelectCollider = CreateDefaultSubobject<USphereComponent>(TEXT("ElementSelectCollider"));
+	ElementSelectCollider->SetupAttachment(GetMesh1P());
+	ElementSelectCollider->InitSphereRadius(1.f);
+	// TODO set channels
 }
 
 void ASorceryCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	// element select collider functions
+	ElementSelectCollider->OnComponentBeginOverlap.AddDynamic(this, &ASorceryCharacter::ElementSelectOverlapBegin);
+	ElementSelectCollider->OnComponentEndOverlap.AddDynamic(this, &ASorceryCharacter::ElementSelectOverlapEnd);
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -125,6 +139,9 @@ void ASorceryCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+/*
+	SPELL FUNCTIONS
+*/
 void ASorceryCharacter::ShootDefaultSpell()
 {
 	if (GetController() == nullptr)
@@ -229,4 +246,90 @@ void ASorceryCharacter::UpdateElementWheelRotation(float NormalizedRotation)
 	Rotation.Pitch = FMath::Lerp(EWStartRotation.Pitch, EWStartRotation.Pitch + EWCurrentRotation, NormalizedRotation);
 	ElementWheel->AddLocalRotation(Rotation - EWPreviousRotation);
 	EWPreviousRotation = Rotation;
+}
+
+void ASorceryCharacter::ElementSelectOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// NOTE dirty implementation, dependent on static mesh, which will likely be switched out
+	if (!OtherComp->ComponentHasTag(TEXT("ElementOrb")))
+		return;
+
+	UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(OtherComp);
+	if (!StaticMeshComp)
+		return;
+
+	UStaticMesh* StaticMesh = StaticMeshComp->GetStaticMesh();
+	if (StaticMesh == SMFireElement->GetStaticMesh())
+	{
+		ActiveElement = EElementalType::Fire;
+		SMFireElement->SetWorldScale3D(FVector(0.05f, 0.05f, 0.05f));
+		UpdateActiveElementalType();
+	}
+	else if (StaticMesh == SMIceElement->GetStaticMesh())
+	{
+		ActiveElement = EElementalType::Ice;
+		SMIceElement->SetWorldScale3D(FVector(0.05f, 0.05f, 0.05f));
+		UpdateActiveElementalType();
+	}
+	else if (StaticMesh == SMShockElement->GetStaticMesh())
+	{
+		ActiveElement = EElementalType::Shock;
+		SMShockElement->SetWorldScale3D(FVector(0.05f, 0.05f, 0.05f));
+		UpdateActiveElementalType();
+	}
+	else if (StaticMesh == SMAcidElement->GetStaticMesh())
+	{
+		ActiveElement = EElementalType::Acid;
+		SMAcidElement->SetWorldScale3D(FVector(0.05f, 0.05f, 0.05f));
+		UpdateActiveElementalType();
+	}
+}
+
+void ASorceryCharacter::ElementSelectOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	// NOTE dirty implementation, dependent on static mesh, which will likely be switched out
+	if (!OtherComp->ComponentHasTag(TEXT("ElementOrb")))
+		return;
+
+	UStaticMeshComponent* StaticMeshComp = Cast<UStaticMeshComponent>(OtherComp);
+	if (!StaticMeshComp)
+		return;
+
+	UStaticMesh* StaticMesh = StaticMeshComp->GetStaticMesh();
+	if (StaticMesh == SMFireElement->GetStaticMesh())
+	{
+		SMFireElement->SetWorldScale3D(FVector(0.04f, 0.04f, 0.04f));
+	}
+	else if (StaticMesh == SMIceElement->GetStaticMesh())
+	{
+		SMIceElement->SetWorldScale3D(FVector(0.04f, 0.04f, 0.04f));
+	}
+	else if (StaticMesh == SMShockElement->GetStaticMesh())
+	{
+		SMShockElement->SetWorldScale3D(FVector(0.04f, 0.04f, 0.04f));
+	}
+	else if (StaticMesh == SMAcidElement->GetStaticMesh())
+	{
+		SMAcidElement->SetWorldScale3D(FVector(0.04f, 0.04f, 0.04f));
+	}
+}
+
+
+void ASorceryCharacter::UpdateActiveElementalType()
+{
+	switch (ActiveElement)
+	{
+		case EElementalType::Fire:
+			ProjectileClass = DefaultProjectile_Fire;
+			break;
+		case EElementalType::Ice:
+			ProjectileClass = DefaultProjectile_Ice;
+			break;
+		case EElementalType::Shock:
+			ProjectileClass = DefaultProjectile_Shock;
+			break;
+		case EElementalType::Acid:
+			ProjectileClass = DefaultProjectile_Acid;
+			break;
+	}
 }

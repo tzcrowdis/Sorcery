@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Sorcery.h"
 #include "SorceryProjectile.generated.h"
 
 class USphereComponent;
@@ -21,6 +22,10 @@ class ASorceryProjectile : public AActor
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
+
+	/* Projectile Elemental Type */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
+	EElementalType ProjectileElement;
 
 public:
 	ASorceryProjectile();

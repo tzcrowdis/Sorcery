@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "Sorcery.h"
 #include "SorceryCharacter.generated.h"
 
 class UInputComponent;
@@ -13,6 +14,7 @@ class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
 struct FInputActionValue;
+class USphereComponent;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -45,11 +47,11 @@ class ASorceryCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ShootDefaultAction;
 
-	/** Shoot Default Projectile Input Action */
+	/** Rotate Element Wheel Left Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ElementWheelLeft;
 
-	/** Shoot Default Projectile Input Action */
+	/** Rotate Element Wheel Right Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ElementWheelRight;
 	
@@ -60,39 +62,51 @@ protected:
 	virtual void BeginPlay();
 
 public:
-	/** Default Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	/** Default Projectile classes to spawn for each element */
 	TSubclassOf<class ASorceryProjectile> ProjectileClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class ASorceryProjectile> DefaultProjectile_Fire;
 
-	/** Spell offset from the characters location */
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay, meta=(MakeEditWidget = true))
-	//FVector SpellOffset;
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class ASorceryProjectile> DefaultProjectile_Ice;
 
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class ASorceryProjectile> DefaultProjectile_Shock;
+
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class ASorceryProjectile> DefaultProjectile_Acid;
+
+	/* Element Wheel */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
 	USceneComponent* ElementWheel;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
-	UStaticMeshComponent* FireElement;
+	UStaticMeshComponent* SMFireElement;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
-	UStaticMeshComponent* ShockElement;
+	UStaticMeshComponent* SMShockElement;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
-	UStaticMeshComponent* IceElement;
+	UStaticMeshComponent* SMIceElement;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
-	UStaticMeshComponent* AcidElement;
+	UStaticMeshComponent* SMAcidElement;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
+	USphereComponent* ElementSelectCollider;
 
 protected:
+	/* Element Wheel Rotation Vars */
 	TQueue<int32> EWRotationQueue;
 	int32 EWCurrentRotation;
 	FRotator EWStartRotation;
 	FRotator EWPreviousRotation;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
 	int32 EWLeftRotationValue;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
 	int32 EWRightRotationValue;
+
+	/* Element Wheel Type */
+	EElementalType ActiveElement;
 
 protected:
 	/** Called for movement input */
@@ -120,14 +134,24 @@ public:
 	void QueueElementWheelLeft();
 	void QueueElementWheelRight();
 
+	/** Element Wheel Timeline Functions */
 	UFUNCTION(BlueprintCallable, Category = "Element Wheel")
 	bool ProcessElementWheelQueue();
 
-	/** Element Wheel Timeline Functions */
 	UFUNCTION(BlueprintImplementableEvent, Category = "Element Wheel")
 	void RotateElementWheel();
 
 	UFUNCTION(BlueprintCallable, Category = "Element Wheel")
 	void UpdateElementWheelRotation(float Rotation);
+
+	/* Selecting Element from Wheel */
+	UFUNCTION()
+	void ElementSelectOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void ElementSelectOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION(BlueprintCallable, Category = "Element Wheel")
+	void UpdateActiveElementalType();
 };
 
