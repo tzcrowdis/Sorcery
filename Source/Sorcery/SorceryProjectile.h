@@ -19,6 +19,9 @@ class ASorceryProjectile : public AActor
 	UPROPERTY(VisibleDefaultsOnly, Category=Projectile)
 	USphereComponent* CollisionComp;
 
+	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
+	UStaticMeshComponent* SphereMesh;
+
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
@@ -26,6 +29,18 @@ class ASorceryProjectile : public AActor
 	/* Projectile Elemental Type */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	EElementalType ProjectileElement;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Fire;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Ice;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Shock;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Acid;
 
 public:
 	ASorceryProjectile();
@@ -38,5 +53,9 @@ public:
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+
+public:
+	/* Functions to Change Projectile Properties */
+	void ChangeElementalType(EElementalType NewType);
 };
 

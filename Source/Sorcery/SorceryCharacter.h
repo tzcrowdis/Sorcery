@@ -63,19 +63,8 @@ protected:
 
 public:
 	/** Default Projectile classes to spawn for each element */
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class ASorceryProjectile> ProjectileClass;
-	
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<class ASorceryProjectile> DefaultProjectile_Fire;
-
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<class ASorceryProjectile> DefaultProjectile_Ice;
-
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<class ASorceryProjectile> DefaultProjectile_Shock;
-
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<class ASorceryProjectile> DefaultProjectile_Acid;
 
 	/* Element Wheel */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
@@ -139,7 +128,7 @@ public:
 	bool ProcessElementWheelQueue();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Element Wheel")
-	void RotateElementWheel();
+	void RotateElementWheel(); // event in blueprint
 
 	UFUNCTION(BlueprintCallable, Category = "Element Wheel")
 	void UpdateElementWheelRotation(float Rotation);

@@ -62,14 +62,9 @@ ASorceryCharacter::ASorceryCharacter()
 	EWCurrentRotation = 0;
 	EWPreviousRotation = FRotator(0.f, 0.f, 0.f);
 
-	// element wheel selection of element
-	ActiveElement = EElementalType::Fire;
-	ProjectileClass = DefaultProjectile_Fire;
-
 	ElementSelectCollider = CreateDefaultSubobject<USphereComponent>(TEXT("ElementSelectCollider"));
 	ElementSelectCollider->SetupAttachment(GetMesh1P());
 	ElementSelectCollider->InitSphereRadius(1.f);
-	// TODO set channels
 }
 
 void ASorceryCharacter::BeginPlay()
@@ -80,6 +75,10 @@ void ASorceryCharacter::BeginPlay()
 	// element select collider functions
 	ElementSelectCollider->OnComponentBeginOverlap.AddDynamic(this, &ASorceryCharacter::ElementSelectOverlapBegin);
 	ElementSelectCollider->OnComponentEndOverlap.AddDynamic(this, &ASorceryCharacter::ElementSelectOverlapEnd);
+
+	// element wheel selection of element
+	ActiveElement = EElementalType::Fire;
+	UpdateActiveElementalType();
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -317,19 +316,6 @@ void ASorceryCharacter::ElementSelectOverlapEnd(UPrimitiveComponent* OverlappedC
 
 void ASorceryCharacter::UpdateActiveElementalType()
 {
-	switch (ActiveElement)
-	{
-		case EElementalType::Fire:
-			ProjectileClass = DefaultProjectile_Fire;
-			break;
-		case EElementalType::Ice:
-			ProjectileClass = DefaultProjectile_Ice;
-			break;
-		case EElementalType::Shock:
-			ProjectileClass = DefaultProjectile_Shock;
-			break;
-		case EElementalType::Acid:
-			ProjectileClass = DefaultProjectile_Acid;
-			break;
-	}
+	ASorceryProjectile* projectile = Cast<ASorceryProjectile>(ProjectileClass->GetDefaultObject());
+	if (projectile) projectile->ChangeElementalType(ActiveElement);
 }

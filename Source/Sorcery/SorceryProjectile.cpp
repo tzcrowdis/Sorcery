@@ -19,6 +19,10 @@ ASorceryProjectile::ASorceryProjectile()
 	// Set as root component
 	RootComponent = CollisionComp;
 
+	// Projectile Mesh
+	SphereMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SphereMesh"));
+	SphereMesh->SetupAttachment(CollisionComp);
+
 	// Use a ProjectileMovementComponent to govern this projectile's movement
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileComp"));
 	ProjectileMovement->UpdatedComponent = CollisionComp;
@@ -39,5 +43,25 @@ void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 
 		Destroy();
+	}
+}
+
+void ASorceryProjectile::ChangeElementalType(EElementalType NewType)
+{
+	ProjectileElement = NewType;
+	switch (ProjectileElement)
+	{
+		case EElementalType::Fire:
+			SphereMesh->SetMaterial(0, M_Fire);
+			break;
+		case EElementalType::Ice:
+			SphereMesh->SetMaterial(0, M_Ice);
+			break;
+		case EElementalType::Shock:
+			SphereMesh->SetMaterial(0, M_Shock);
+			break;
+		case EElementalType::Acid:
+			SphereMesh->SetMaterial(0, M_Acid);
+			break;
 	}
 }
