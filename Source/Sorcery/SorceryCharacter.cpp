@@ -14,6 +14,7 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "Sorcery.h"
 #include "Components/SphereComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -37,7 +38,6 @@ ASorceryCharacter::ASorceryCharacter()
 	Mesh1P->SetupAttachment(FirstPersonCameraComponent);
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
-	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
 	// create the element wheel component
@@ -65,6 +65,13 @@ ASorceryCharacter::ASorceryCharacter()
 	ElementSelectCollider = CreateDefaultSubobject<USphereComponent>(TEXT("ElementSelectCollider"));
 	ElementSelectCollider->SetupAttachment(GetMesh1P());
 	ElementSelectCollider->InitSphereRadius(1.f);
+
+	// dash variables
+	DashVelocity = 500.f;
+	DashMaxCount = 1;
+	DashCount = 0;
+	bDashCooldownActive = false;
+	DefaultGroundFriction = GetCharacterMovement()->GroundFriction;
 }
 
 void ASorceryCharacter::BeginPlay()
@@ -97,6 +104,9 @@ void ASorceryCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::Look);
+
+		// Dashing
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::Dash);
 
 		// Default Shooting
 		EnhancedInputComponent->BindAction(ShootDefaultAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ShootDefaultSpell);
@@ -138,6 +148,42 @@ void ASorceryCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+void ASorceryCharacter::Dash()
+{
+	if (bDashCooldownActive)
+		return;
+
+	if (DashCount == DashMaxCount)
+	{
+		GetWorldTimerManager().SetTimer(DashCooldownTimer, this, &ASorceryCharacter::ClearDashCooldown, DashCooldownTime);
+		bDashCooldownActive = true;
+		print("dash cooldown active");
+		return;
+	}
+
+	// NOTE i wanted to dash in camera direction but struggled with vertical friction, might be better without due to backwards dash
+	//FVector DashVector = FirstPersonCameraComponent->GetForwardVector(); 
+
+	// only dash forward
+	//FVector DashVector = GetActorForwardVector();
+
+	// dash horizontally according to movement input
+	FVector DashVector = GetPendingMovementInputVector();
+	DashVector.Z = 0.f;
+	DashVector.Normalize();
+	
+	LaunchCharacter(DashVector * DashVelocity, false, false);
+	DashCount++;
+}
+
+void ASorceryCharacter::ClearDashCooldown()
+{
+	GetWorldTimerManager().ClearTimer(DashCooldownTimer);
+	DashCount = 0;
+	bDashCooldownActive = false;
+	print("dash cooldown cleared");
+}
+
 /*
 	SPELL FUNCTIONS
 */
@@ -162,9 +208,6 @@ void ASorceryCharacter::ShootDefaultSpell()
 				return;
 			const FVector SpawnLocation = SpellOffsetSocket->GetSocketLocation(GetMesh1P());
 			
-			// SpellOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-			//const FVector SpawnLocation = GetOwner()->GetActorLocation() + SpawnRotation.RotateVector(SpellOffset);
-
 			//Set Spawn Collision Handling Override
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;

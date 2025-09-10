@@ -39,6 +39,10 @@ class ASorceryCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	UInputAction* MoveAction;
 
+	/** Dash Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* DashAction;
+
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
@@ -62,6 +66,19 @@ protected:
 	virtual void BeginPlay();
 
 public:
+	/** Dash Variables */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	float DashVelocity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	int DashMaxCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	float DashCooldownTime;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dash")
+	float DefaultGroundFriction;
+
 	/** Default Projectile classes to spawn for each element */
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class ASorceryProjectile> ProjectileClass;
@@ -86,6 +103,11 @@ public:
 	USphereComponent* ElementSelectCollider;
 
 protected:
+	/* Dash */
+	int DashCount;
+	FTimerHandle DashCooldownTimer;
+	bool bDashCooldownActive;
+	
 	/* Element Wheel Rotation Vars */
 	TQueue<int32> EWRotationQueue;
 	int32 EWCurrentRotation;
@@ -104,6 +126,14 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	/** Called for dash input */
+	void Dash();
+	void ClearDashCooldown();
+
+	/* Element Wheel Input Queue Functions */
+	void QueueElementWheelLeft();
+	void QueueElementWheelRight();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
@@ -112,16 +142,13 @@ protected:
 public:
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
+
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 	/** Cast spell to shoot the Default Projectile */
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void ShootDefaultSpell();
-
-	/* Element Wheel Input Queue Functions */
-	void QueueElementWheelLeft();
-	void QueueElementWheelRight();
 
 	/** Element Wheel Timeline Functions */
 	UFUNCTION(BlueprintCallable, Category = "Element Wheel")
