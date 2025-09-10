@@ -76,9 +76,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float DashCooldownTime;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Dash")
-	float DefaultGroundFriction;
-
 	/** Default Projectile classes to spawn for each element */
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class ASorceryProjectile> ProjectileClass;

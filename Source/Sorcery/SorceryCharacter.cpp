@@ -71,7 +71,6 @@ ASorceryCharacter::ASorceryCharacter()
 	DashMaxCount = 1;
 	DashCount = 0;
 	bDashCooldownActive = false;
-	DefaultGroundFriction = GetCharacterMovement()->GroundFriction;
 }
 
 void ASorceryCharacter::BeginPlay()
