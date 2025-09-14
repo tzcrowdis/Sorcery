@@ -34,6 +34,13 @@ protected:
 
 	float GetDamageResistance(UDamageType* DamageType);
 
+public:
+	UPROPERTY(VisibleDefaultsOnly, Category = "Combat")
+	class USphereComponent* WeakSpotComp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float WeakSpotMultiplier;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

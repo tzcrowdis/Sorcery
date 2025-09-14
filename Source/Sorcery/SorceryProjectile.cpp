@@ -50,7 +50,12 @@ void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 		if (Enemy)
 		{
 			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0); // NOTE assumes single player
-			UGameplayStatics::ApplyDamage(Enemy, Damage, PlayerController, this, GetDamageType());
+
+			if (OtherComp == Enemy->WeakSpotComp)
+				UGameplayStatics::ApplyDamage(Enemy, Damage * Enemy->WeakSpotMultiplier, PlayerController, this, GetDamageType());
+			else
+				UGameplayStatics::ApplyDamage(Enemy, Damage, PlayerController, this, GetDamageType());
+				
 			Destroy();
 		}
 		

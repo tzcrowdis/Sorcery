@@ -2,6 +2,7 @@
 
 
 #include "Enemy.h"
+#include "Components/SphereComponent.h"
 
 #include "Engine/DamageEvents.h"
 #include "DT_Fire.h"
@@ -14,6 +15,10 @@ AEnemy::AEnemy()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	WeakSpotComp = CreateDefaultSubobject<USphereComponent>(TEXT("WeakSpot"));
+	WeakSpotComp->SetupAttachment(RootComponent);
+	WeakSpotMultiplier = 1.5f;
 
 	DamageResistancePercent = 0.8f;
 }
