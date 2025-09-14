@@ -4,6 +4,13 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 
+#include "Enemy.h"
+#include "Kismet/GameplayStatics.h"
+#include "DT_Fire.h"
+#include "DT_Ice.h"
+#include "DT_Acid.h"
+#include "DT_Shock.h"
+
 ASorceryProjectile::ASorceryProjectile() 
 {
 	// Use a sphere as a simple collision representation
@@ -37,12 +44,22 @@ ASorceryProjectile::ASorceryProjectile()
 
 void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+	if ((OtherActor != nullptr) && (OtherActor != this))
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-
-		Destroy();
+		AEnemy* Enemy = Cast<AEnemy>(OtherActor);
+		if (Enemy)
+		{
+			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0); // NOTE assumes single player
+			UGameplayStatics::ApplyDamage(Enemy, Damage, PlayerController, this, GetDamageType());
+			Destroy();
+		}
+		
+		// Only add impulse and destroy projectile if we hit a physics
+		if ((OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+		{
+			OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+			Destroy();
+		}	
 	}
 }
 
@@ -64,4 +81,21 @@ void ASorceryProjectile::ChangeElementalType(EElementalType NewType)
 			SphereMesh->SetMaterial(0, M_Acid);
 			break;
 	}
+}
+
+UClass* ASorceryProjectile::GetDamageType()
+{
+	switch (ProjectileElement)
+	{
+		case EElementalType::Fire:
+			return UDT_Fire::StaticClass();
+		case EElementalType::Ice:
+			return UDT_Ice::StaticClass();
+		case EElementalType::Shock:
+			return UDT_Shock::StaticClass();
+		case EElementalType::Acid:
+			return UDT_Acid::StaticClass();
+	}
+
+	return nullptr;
 }

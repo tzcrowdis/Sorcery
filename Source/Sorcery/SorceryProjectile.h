@@ -42,6 +42,9 @@ class ASorceryProjectile : public AActor
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	UMaterialInterface* M_Acid;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
+	float Damage;
+
 public:
 	ASorceryProjectile();
 
@@ -53,6 +56,9 @@ public:
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+
+protected:
+	UClass* GetDamageType();
 
 public:
 	/* Functions to Change Projectile Properties */
