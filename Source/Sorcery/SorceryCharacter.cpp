@@ -71,6 +71,9 @@ ASorceryCharacter::ASorceryCharacter()
 	DashMaxCount = 1;
 	DashCount = 0;
 	bDashCooldownActive = false;
+
+	// aim variables
+	MaxAimDistance = 5000.f;
 }
 
 void ASorceryCharacter::BeginPlay()
@@ -85,6 +88,13 @@ void ASorceryCharacter::BeginPlay()
 	// element wheel selection of element
 	ActiveElement = EElementalType::Fire;
 	UpdateActiveElementalType();
+}
+
+void ASorceryCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+	//AimDebug();
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -147,6 +157,29 @@ void ASorceryCharacter::Look(const FInputActionValue& Value)
 	}
 }
 
+FVector ASorceryCharacter::Aim()
+{
+	FHitResult AimPoint;
+	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+	FVector End = Start + FirstPersonCameraComponent->GetForwardVector() * MaxAimDistance;
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(this);
+	GetWorld()->LineTraceSingleByChannel(AimPoint, Start, End, ECollisionChannel::ECC_Visibility, CollisionQueryParams);
+	return AimPoint.Location;
+}
+
+FVector ASorceryCharacter::AimDebug()
+{
+	FHitResult AimPoint;
+	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
+	FVector End = Start + FirstPersonCameraComponent->GetForwardVector() * MaxAimDistance;
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(this);
+	GetWorld()->LineTraceSingleByChannel(AimPoint, Start, End, ECollisionChannel::ECC_Visibility, CollisionQueryParams);
+	DrawDebugSphere(GetWorld(), AimPoint.Location, 15.f, 12, FColor::Red, false);
+	return AimPoint.Location;
+}
+
 void ASorceryCharacter::Dash()
 {
 	if (bDashCooldownActive)
@@ -199,13 +232,18 @@ void ASorceryCharacter::ShootDefaultSpell()
 		UWorld* const World = GetWorld();
 		if (World != nullptr)
 		{
-			APlayerController* PlayerController = Cast<APlayerController>(GetController());
-			const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
+			//APlayerController* PlayerController = Cast<APlayerController>(GetController());
+			//const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
 			
 			const USkeletalMeshSocket* SpellOffsetSocket = GetMesh1P()->GetSocketByName("SpellRSocket");
 			if (!SpellOffsetSocket)
 				return;
 			const FVector SpawnLocation = SpellOffsetSocket->GetSocketLocation(GetMesh1P());
+
+			FVector AimPoint = Aim();
+			FVector Direction = AimPoint - SpawnLocation;
+			Direction.Normalize();
+			const FRotator SpawnRotation = Direction.Rotation();
 			
 			//Set Spawn Collision Handling Override
 			FActorSpawnParameters ActorSpawnParams;

@@ -76,6 +76,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float DashCooldownTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim")
+	float MaxAimDistance;
+
 	/** Default Projectile classes to spawn for each element */
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class ASorceryProjectile> ProjectileClass;
@@ -123,6 +126,12 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	/* aim */
+	FVector Aim();
+
+	/* Show sphere where the player is aiming */
+	FVector AimDebug();
+
 	/** Called for dash input */
 	void Dash();
 	void ClearDashCooldown();
@@ -131,12 +140,14 @@ protected:
 	void QueueElementWheelLeft();
 	void QueueElementWheelRight();
 
-protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
 
 public:
+	/* Called every frame */
+	virtual void Tick(float DeltaTime) override;
+	
 	/** Returns Mesh1P subobject **/
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 
