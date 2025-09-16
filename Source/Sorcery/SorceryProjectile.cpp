@@ -49,6 +49,9 @@ void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 		AEnemy* Enemy = Cast<AEnemy>(OtherActor);
 		if (Enemy)
 		{
+			if (OtherComp == Enemy->AttackSphere) 
+				return; // NOTE i gotta be misunderstanding a collision setting but this should work
+			
 			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0); // NOTE assumes single player
 
 			if (OtherComp == Enemy->WeakSpotComp)

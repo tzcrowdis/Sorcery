@@ -4,6 +4,11 @@
 #include "Enemy.h"
 #include "Components/SphereComponent.h"
 
+#include "EnemyController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "SorceryCharacter.h"
+#include "Kismet/GameplayStatics.h"
+
 #include "Engine/DamageEvents.h"
 #include "DT_Fire.h"
 #include "DT_Ice.h"
@@ -16,6 +21,14 @@ AEnemy::AEnemy()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	EnemyController = Cast<AEnemyController>(GetController());
+	bIsChasing = true;
+	bInAttackRange = false;
+	bAttacking = false;
+
+	AttackSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AttackSphere"));
+	AttackSphere->SetupAttachment(GetRootComponent());
+	
 	WeakSpotComp = CreateDefaultSubobject<USphereComponent>(TEXT("WeakSpot"));
 	WeakSpotComp->SetupAttachment(RootComponent);
 	WeakSpotMultiplier = 1.5f;
@@ -27,7 +40,16 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (EnemyController == nullptr)
+		EnemyController = Cast<AEnemyController>(GetController());
+
+	ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Sorcerer)
+		EnemyController->GetBlackboard()->SetValueAsObject(TEXT("TargetActor"), Sorcerer);
 	
+	AttackSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::AttackSphereBeginOverlap);
+	AttackSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::AttackSphereEndOverlap);
 }
 
 // Called every frame
@@ -42,6 +64,47 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AEnemy::AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor)
+	{
+		ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(OtherActor);
+		if (Sorcerer)
+		{
+			if (EnemyController == nullptr)
+				EnemyController = Cast<AEnemyController>(GetController());
+
+			EnemyController->GetBlackboard()->SetValueAsBool(TEXT("InAttackRange"), true);
+
+			bInAttackRange = true;
+			bAttacking = true;
+		}
+	}
+}
+
+void AEnemy::AttackSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (OtherActor)
+	{
+		ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(OtherActor);
+		if (Sorcerer)
+		{
+			if (EnemyController == nullptr)
+				EnemyController = Cast<AEnemyController>(GetController());
+
+			EnemyController->GetBlackboard()->SetValueAsBool(TEXT("InAttackRange"), false);
+
+			bInAttackRange = false;
+			bAttacking = false;
+		}
+	}
+}
+
+void AEnemy::IsChasing(bool bChasing)
+{
+	bIsChasing = bChasing;
 }
 
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
