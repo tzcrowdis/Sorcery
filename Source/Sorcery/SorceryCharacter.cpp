@@ -93,8 +93,7 @@ void ASorceryCharacter::BeginPlay()
 void ASorceryCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	//AimDebug();
+
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -159,25 +158,18 @@ void ASorceryCharacter::Look(const FInputActionValue& Value)
 
 FVector ASorceryCharacter::Aim()
 {
-	FHitResult AimPoint;
+	FHitResult HitResult;
 	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
 	FVector End = Start + FirstPersonCameraComponent->GetForwardVector() * MaxAimDistance;
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.AddIgnoredActor(this);
-	GetWorld()->LineTraceSingleByChannel(AimPoint, Start, End, ECollisionChannel::ECC_Visibility, CollisionQueryParams);
-	return AimPoint.Location;
-}
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, CollisionQueryParams);
 
-FVector ASorceryCharacter::AimDebug()
-{
-	FHitResult AimPoint;
-	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
-	FVector End = Start + FirstPersonCameraComponent->GetForwardVector() * MaxAimDistance;
-	FCollisionQueryParams CollisionQueryParams;
-	CollisionQueryParams.AddIgnoredActor(this);
-	GetWorld()->LineTraceSingleByChannel(AimPoint, Start, End, ECollisionChannel::ECC_Visibility, CollisionQueryParams);
-	DrawDebugSphere(GetWorld(), AimPoint.Location, 15.f, 12, FColor::Red, false);
-	return AimPoint.Location;
+	FVector AimPoint = End;
+	if (HitResult.bBlockingHit)
+		AimPoint = HitResult.Location;
+
+	return AimPoint;
 }
 
 void ASorceryCharacter::Dash()
