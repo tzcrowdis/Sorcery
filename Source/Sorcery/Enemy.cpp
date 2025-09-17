@@ -2,6 +2,7 @@
 
 
 #include "Enemy.h"
+#include "Sorcery.h"
 #include "Components/SphereComponent.h"
 
 #include "EnemyController.h"
@@ -32,6 +33,9 @@ AEnemy::AEnemy()
 	WeakSpotComp = CreateDefaultSubobject<USphereComponent>(TEXT("WeakSpot"));
 	WeakSpotComp->SetupAttachment(RootComponent);
 	WeakSpotMultiplier = 1.5f;
+
+	ElementalWeaknessMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ElementalWeaknessMesh"));
+	ElementalWeaknessMesh->SetupAttachment(WeakSpotComp); // TEMP
 
 	DamageResistancePercent = 0.8f;
 }
@@ -64,6 +68,31 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+// Called after spawning in the spawner blueprint
+void AEnemy::RandomizeElementalWeakness()
+{
+	int32 randomElement = FMath::RandRange(0, 3);
+	switch (static_cast<EElementalType>(randomElement))
+	{
+		case EElementalType::Fire:
+			ElementWeakness = EElementalType::Fire;
+			ElementalWeaknessMesh->SetMaterial(0, M_Fire);
+			break;
+		case EElementalType::Ice:
+			ElementWeakness = EElementalType::Ice;
+			ElementalWeaknessMesh->SetMaterial(0, M_Ice);
+			break;
+		case EElementalType::Shock:
+			ElementWeakness = EElementalType::Shock;
+			ElementalWeaknessMesh->SetMaterial(0, M_Shock);
+			break;
+		case EElementalType::Acid:
+			ElementWeakness = EElementalType::Acid;
+			ElementalWeaknessMesh->SetMaterial(0, M_Acid);
+			break;
+	}
 }
 
 void AEnemy::AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

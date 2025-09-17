@@ -19,15 +19,32 @@ class SORCERY_API AEnemy : public ACharacter
 	float MaxHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	float DamageResistancePercent;
+
+	/* Elemental Weakness */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elements", meta = (AllowPrivateAccess = "true"))
 	EElementalType ElementWeakness;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	float DamageResistancePercent;
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UStaticMeshComponent* ElementalWeaknessMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Fire;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Ice;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Shock;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Acid;
 
 public:
 	// Sets default values for this character's properties
 	AEnemy();
 
+	/* AI */
 	class AEnemyController* EnemyController;
 	
 	UPROPERTY(EditAnywhere, Category = "Behavior")
@@ -42,6 +59,7 @@ public:
 	bool bInAttackRange;
 	bool bAttacking;
 
+	/* Weak Spot */
 	UPROPERTY(VisibleDefaultsOnly, Category = "Combat")
 	class USphereComponent* WeakSpotComp;
 
@@ -60,6 +78,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable)
+	void RandomizeElementalWeakness();
 
 	UFUNCTION()
 	void AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
