@@ -15,7 +15,8 @@ public class Sorcery : ModuleRules
 			"InputCore", 
 			"EnhancedInput", 
 			"NavigationSystem",
-			"AIModule"
+			"AIModule",
+			"Niagara"
 		});
 	}
 }

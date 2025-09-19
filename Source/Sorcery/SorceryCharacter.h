@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+#include "NiagaraSystem.h"
+#include "NiagaraComponent.h"
 #include "Sorcery.h"
 #include "SorceryCharacter.generated.h"
 
@@ -58,6 +60,22 @@ class ASorceryCharacter : public ACharacter
 	/** Rotate Element Wheel Right Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ElementWheelRight;
+
+	/* Muzzle Flash */
+	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
+	UNiagaraSystem* FireSpellMuzzleFlash;
+
+	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
+	UNiagaraSystem* IceSpellMuzzleFlash;
+
+	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
+	UNiagaraSystem* ShockSpellMuzzleFlash;
+
+	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
+	UNiagaraSystem* AcidSpellMuzzleFlash;
+
+	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
+	UNiagaraComponent* MuzzleFlashComp;
 	
 public:
 	ASorceryCharacter();

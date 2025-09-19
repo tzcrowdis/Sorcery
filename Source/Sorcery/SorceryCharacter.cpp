@@ -16,6 +16,8 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
+#include "NiagaraFunctionLibrary.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -74,6 +76,12 @@ ASorceryCharacter::ASorceryCharacter()
 
 	// aim variables
 	MaxAimDistance = 5000.f;
+
+	// muzzle flash
+	MuzzleFlashComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MuzzleFlashEffect"));
+	MuzzleFlashComp->SetupAttachment(GetMesh1P());
+	if (FireSpellMuzzleFlash)
+		MuzzleFlashComp->SetAsset(FireSpellMuzzleFlash);
 }
 
 void ASorceryCharacter::BeginPlay()
@@ -243,6 +251,17 @@ void ASorceryCharacter::ShootDefaultSpell()
 
 			// Spawn the projectile at the muzzle
 			World->SpawnActor<ASorceryProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+
+			// muzzle flash
+			if (MuzzleFlashComp)
+			{
+				if (MuzzleFlashComp->IsActive())
+					MuzzleFlashComp->Deactivate();
+
+				MuzzleFlashComp->SetWorldRotation(SpawnRotation);
+				MuzzleFlashComp->Activate();
+			}
+				
 		}
 	}
 
@@ -390,4 +409,21 @@ void ASorceryCharacter::UpdateActiveElementalType()
 {
 	ASorceryProjectile* projectile = Cast<ASorceryProjectile>(ProjectileClass->GetDefaultObject());
 	if (projectile) projectile->ChangeElementalType(ActiveElement);
+
+	switch (ActiveElement)
+	{
+		case EElementalType::Fire:
+			MuzzleFlashComp->SetAsset(FireSpellMuzzleFlash);
+			break;
+		case EElementalType::Ice:
+			MuzzleFlashComp->SetAsset(IceSpellMuzzleFlash);
+			break;
+		case EElementalType::Shock:
+			MuzzleFlashComp->SetAsset(ShockSpellMuzzleFlash);
+			break;
+		case EElementalType::Acid:
+			MuzzleFlashComp->SetAsset(AcidSpellMuzzleFlash);
+			break;
+	}
+	MuzzleFlashComp->Deactivate();
 }
