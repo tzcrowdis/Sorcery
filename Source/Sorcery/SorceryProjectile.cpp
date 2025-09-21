@@ -3,6 +3,7 @@
 #include "SorceryProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "SorceryCharacter.h"
 
 #include "Enemy.h"
 #include "Kismet/GameplayStatics.h"
@@ -10,6 +11,10 @@
 #include "DT_Ice.h"
 #include "DT_Acid.h"
 #include "DT_Shock.h"
+
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 ASorceryProjectile::ASorceryProjectile() 
 {
@@ -46,6 +51,10 @@ void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 {
 	if ((OtherActor != nullptr) && (OtherActor != this))
 	{
+		ASorceryCharacter* Player = Cast<ASorceryCharacter>(OtherActor);
+		if (Player)
+			return;
+		
 		AEnemy* Enemy = Cast<AEnemy>(OtherActor);
 		if (Enemy)
 		{
@@ -58,7 +67,7 @@ void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 				UGameplayStatics::ApplyDamage(Enemy, Damage * Enemy->WeakSpotMultiplier, PlayerController, this, GetDamageType());
 			else
 				UGameplayStatics::ApplyDamage(Enemy, Damage, PlayerController, this, GetDamageType());
-				
+			
 			Destroy();
 		}
 		
@@ -67,7 +76,9 @@ void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 		{
 			OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
 			Destroy();
-		}	
+		}
+
+		SpawnHitEffect(Enemy, Hit.Normal);
 	}
 }
 
@@ -106,4 +117,40 @@ UClass* ASorceryProjectile::GetDamageType()
 	}
 
 	return nullptr;
+}
+
+void ASorceryProjectile::SpawnHitEffect(AEnemy* EnemyHit, FVector Normal)
+{
+	UNiagaraSystem* ElementHitEffect = nullptr;
+	switch (ProjectileElement)
+	{
+		case EElementalType::Fire:
+			ElementHitEffect = FireHitEffect;
+			break;
+		case EElementalType::Ice:
+			ElementHitEffect = IceHitEffect;
+			break;
+		case EElementalType::Shock:
+			ElementHitEffect = ShockHitEffect;
+			break;
+		case EElementalType::Acid:
+			ElementHitEffect = AcidHitEffect;
+			break;
+	}
+
+	if (ElementHitEffect == nullptr)
+		return;
+
+	UNiagaraComponent* HitEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		GetWorld(),
+		ElementHitEffect,
+		GetActorLocation(),
+		UKismetMathLibrary::Conv_VectorToRotator(Normal),
+		FVector(0.5f, 0.5f, 0.5f)
+	);
+
+	if (EnemyHit)
+	{
+		HitEffect->AttachToComponent(EnemyHit->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+	}
 }

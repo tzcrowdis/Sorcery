@@ -5,10 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Sorcery.h"
+#include "Enemy.h"
 #include "SorceryProjectile.generated.h"
 
 class USphereComponent;
 class UProjectileMovementComponent;
+class UNiagaraSystem;
 
 UCLASS(config=Game)
 class ASorceryProjectile : public AActor
@@ -45,6 +47,19 @@ class ASorceryProjectile : public AActor
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	float Damage;
 
+	/* Hit Effect */
+	UPROPERTY(EditAnywhere, Category = "Hit Effect")
+	UNiagaraSystem* FireHitEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Effect")
+	UNiagaraSystem* IceHitEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Effect")
+	UNiagaraSystem* ShockHitEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Effect")
+	UNiagaraSystem* AcidHitEffect;
+
 public:
 	ASorceryProjectile();
 
@@ -59,6 +74,8 @@ public:
 
 protected:
 	UClass* GetDamageType();
+
+	void SpawnHitEffect(AEnemy* EnemyHit, FVector Normal);
 
 public:
 	/* Functions to Change Projectile Properties */

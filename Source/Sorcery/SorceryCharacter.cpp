@@ -232,14 +232,13 @@ void ASorceryCharacter::ShootDefaultSpell()
 		UWorld* const World = GetWorld();
 		if (World != nullptr)
 		{
-			//APlayerController* PlayerController = Cast<APlayerController>(GetController());
-			//const FRotator SpawnRotation = PlayerController->PlayerCameraManager->GetCameraRotation();
-			
+			// Spawn location
 			const USkeletalMeshSocket* SpellOffsetSocket = GetMesh1P()->GetSocketByName("SpellRSocket");
 			if (!SpellOffsetSocket)
 				return;
 			const FVector SpawnLocation = SpellOffsetSocket->GetSocketLocation(GetMesh1P());
 
+			// Spawn rotation
 			FVector AimPoint = Aim();
 			FVector Direction = AimPoint - SpawnLocation;
 			Direction.Normalize();
