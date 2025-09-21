@@ -66,6 +66,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float WeakSpotMultiplier;
 
+	/* Floating Damage Variables */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DamageText")
+	float DamageTaken;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DamageText")
+	bool bWeakSpotHit;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DamageText")
+	FVector ImpactPoint;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -101,4 +111,8 @@ public:
 	) override;
 
 	virtual void Die(AActor* DeathCauser);
+
+	/* Floating Damage Functions */
+	UFUNCTION(BlueprintImplementableEvent, Category = "DamageText")
+	void DrawFloatingDamageText();
 };

@@ -63,10 +63,17 @@ void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 			
 			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0); // NOTE assumes single player
 
+			Enemy->ImpactPoint = Hit.Location + 10.f * Hit.Normal; // Hit.Normal so it isn't in the mesh
 			if (OtherComp == Enemy->WeakSpotComp)
+			{
+				Enemy->bWeakSpotHit = true;
 				UGameplayStatics::ApplyDamage(Enemy, Damage * Enemy->WeakSpotMultiplier, PlayerController, this, GetDamageType());
+			}
 			else
+			{
+				Enemy->bWeakSpotHit = false;
 				UGameplayStatics::ApplyDamage(Enemy, Damage, PlayerController, this, GetDamageType());
+			}
 			
 			Destroy();
 		}

@@ -141,7 +141,10 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	UDamageType* DamageType = Cast<UDamageType>(DamageEvent.DamageTypeClass->GetDefaultObject());
 	float Resistance = GetDamageResistance(DamageType);
 	
-	Health -= DamageAmount * Resistance; 
+	DamageTaken = DamageAmount * Resistance;
+	DrawFloatingDamageText();
+
+	Health -= DamageTaken; 
 	if (Health <= 0.f)
 	{
 		Health = 0.f;
