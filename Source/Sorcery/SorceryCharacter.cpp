@@ -94,6 +94,9 @@ void ASorceryCharacter::BeginPlay()
 	ElementSelectCollider->OnComponentEndOverlap.AddDynamic(this, &ASorceryCharacter::ElementSelectOverlapEnd);
 
 	// element wheel selection of element
+	DefaultElementScale = SMFireElement->GetRelativeScale3D();
+	SelectedElementScale = 1.1f * DefaultElementScale;
+
 	ActiveElement = EElementalType::Fire;
 	UpdateActiveElementalType();
 }
@@ -233,10 +236,13 @@ void ASorceryCharacter::ShootDefaultSpell()
 		if (World != nullptr)
 		{
 			// Spawn location
+			/*
 			const USkeletalMeshSocket* SpellOffsetSocket = GetMesh1P()->GetSocketByName("SpellRSocket");
 			if (!SpellOffsetSocket)
 				return;
 			const FVector SpawnLocation = SpellOffsetSocket->GetSocketLocation(GetMesh1P());
+			*/
+			const FVector SpawnLocation = MuzzleFlashComp->GetComponentLocation();
 
 			// Spawn rotation
 			FVector AimPoint = Aim();
@@ -260,7 +266,14 @@ void ASorceryCharacter::ShootDefaultSpell()
 				MuzzleFlashComp->SetWorldRotation(SpawnRotation);
 				MuzzleFlashComp->Activate();
 			}
-				
+			
+			// animation
+			UAnimInstance* AnimInstance = GetMesh1P()->GetAnimInstance();
+			if (AnimInstance && SpellsAnimMontage)
+			{
+				AnimInstance->Montage_Play(SpellsAnimMontage, 1.f);
+				AnimInstance->Montage_JumpToSection(FName("ShootDefaultSpell"), SpellsAnimMontage);
+			}
 		}
 	}
 
@@ -326,6 +339,22 @@ bool ASorceryCharacter::ProcessElementWheelQueue()
 	EWRotationQueue.Dequeue(EWCurrentRotation);
 	EWStartRotation = ElementWheel->GetRelativeRotation();
 	EWPreviousRotation = EWStartRotation;
+
+	UAnimInstance* AnimInstance = GetMesh1P()->GetAnimInstance();
+	if (AnimInstance && ElementWheelAnimMontage)
+	{
+		if (EWCurrentRotation <= 0)
+		{
+			AnimInstance->Montage_Play(ElementWheelAnimMontage, 1.f);
+			AnimInstance->Montage_JumpToSection(FName("ElementWheelLeft"), ElementWheelAnimMontage);
+		}
+		else
+		{
+			AnimInstance->Montage_Play(ElementWheelAnimMontage, 1.f);
+			AnimInstance->Montage_JumpToSection(FName("ElementWheelRight"), ElementWheelAnimMontage);
+		}
+	}
+
 	return true;
 }
 
@@ -351,25 +380,25 @@ void ASorceryCharacter::ElementSelectOverlapBegin(UPrimitiveComponent* Overlappe
 	if (StaticMesh == SMFireElement->GetStaticMesh())
 	{
 		ActiveElement = EElementalType::Fire;
-		SMFireElement->SetWorldScale3D(FVector(0.05f, 0.05f, 0.05f));
+		SMFireElement->SetRelativeScale3D(SelectedElementScale);
 		UpdateActiveElementalType();
 	}
 	else if (StaticMesh == SMIceElement->GetStaticMesh())
 	{
 		ActiveElement = EElementalType::Ice;
-		SMIceElement->SetWorldScale3D(FVector(0.05f, 0.05f, 0.05f));
+		SMIceElement->SetRelativeScale3D(SelectedElementScale);
 		UpdateActiveElementalType();
 	}
 	else if (StaticMesh == SMShockElement->GetStaticMesh())
 	{
 		ActiveElement = EElementalType::Shock;
-		SMShockElement->SetWorldScale3D(FVector(0.05f, 0.05f, 0.05f));
+		SMShockElement->SetRelativeScale3D(SelectedElementScale);
 		UpdateActiveElementalType();
 	}
 	else if (StaticMesh == SMAcidElement->GetStaticMesh())
 	{
 		ActiveElement = EElementalType::Acid;
-		SMAcidElement->SetWorldScale3D(FVector(0.05f, 0.05f, 0.05f));
+		SMAcidElement->SetRelativeScale3D(SelectedElementScale);
 		UpdateActiveElementalType();
 	}
 }
@@ -387,19 +416,19 @@ void ASorceryCharacter::ElementSelectOverlapEnd(UPrimitiveComponent* OverlappedC
 	UStaticMesh* StaticMesh = StaticMeshComp->GetStaticMesh();
 	if (StaticMesh == SMFireElement->GetStaticMesh())
 	{
-		SMFireElement->SetWorldScale3D(FVector(0.04f, 0.04f, 0.04f));
+		SMFireElement->SetRelativeScale3D(DefaultElementScale);
 	}
 	else if (StaticMesh == SMIceElement->GetStaticMesh())
 	{
-		SMIceElement->SetWorldScale3D(FVector(0.04f, 0.04f, 0.04f));
+		SMIceElement->SetRelativeScale3D(DefaultElementScale);
 	}
 	else if (StaticMesh == SMShockElement->GetStaticMesh())
 	{
-		SMShockElement->SetWorldScale3D(FVector(0.04f, 0.04f, 0.04f));
+		SMShockElement->SetRelativeScale3D(DefaultElementScale);
 	}
 	else if (StaticMesh == SMAcidElement->GetStaticMesh())
 	{
-		SMAcidElement->SetWorldScale3D(FVector(0.04f, 0.04f, 0.04f));
+		SMAcidElement->SetRelativeScale3D(DefaultElementScale);
 	}
 }
 

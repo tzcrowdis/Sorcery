@@ -61,6 +61,13 @@ class ASorceryCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ElementWheelRight;
 
+	/* Animation */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims", meta = (AllowPrivateAccess = "true"))
+	class UAnimMontage* SpellsAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims", meta = (AllowPrivateAccess = "true"))
+	class UAnimMontage* ElementWheelAnimMontage;
+
 	/* Muzzle Flash */
 	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
 	UNiagaraSystem* FireSpellMuzzleFlash;
@@ -133,6 +140,8 @@ protected:
 	FRotator EWPreviousRotation;
 	int32 EWLeftRotationValue;
 	int32 EWRightRotationValue;
+	FVector DefaultElementScale;
+	FVector SelectedElementScale;
 
 	/* Element Wheel Type */
 	EElementalType ActiveElement;
