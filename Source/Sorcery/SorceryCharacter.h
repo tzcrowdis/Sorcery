@@ -53,6 +53,10 @@ class ASorceryCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ShootDefaultAction;
 
+	/** Shoot Laser Spell Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* DestroyLaserAction;
+
 	/** Rotate Element Wheel Left Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ElementWheelLeft;
@@ -83,6 +87,15 @@ class ASorceryCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
 	UNiagaraComponent* MuzzleFlashComp;
+
+	/* Laser Spell */
+	//UPROPERTY(EditAnywhere, Category = "Spells")
+	//UNiagaraSystem* LaserSpellSystem;
+
+	//UPROPERTY(EditAnywhere, Category = "Spells")
+	//UNiagaraComponent* LaserSpellComp;
+
+	class ALaserSpell* LaserSpell;
 	
 public:
 	ASorceryCharacter();
@@ -107,6 +120,16 @@ public:
 	/** Default Projectile classes to spawn for each element */
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class ASorceryProjectile> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spells")
+	TSubclassOf<class ALaserSpell> LaserSpellClass;
+
+	/* Laser Vars */
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spells")
+	//bool LaserSpellFiring;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spells")
+	//float LaserSpellDamage;
 
 	/* Element Wheel */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
@@ -182,8 +205,21 @@ public:
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 	/** Cast spell to shoot the Default Projectile */
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	UFUNCTION(BlueprintCallable, Category = "Spells")
 	void ShootDefaultSpell();
+
+	/** Cast spell to shoot the laser */
+	UFUNCTION(BlueprintCallable, Category = "Laser Spell")
+	void ShootLaserSpell();
+
+	//UFUNCTION(BlueprintCallable, Category = "Spells")
+	//void TickLaserSpell();
+
+	//UFUNCTION(BlueprintCallable, Category = "Spells")
+	//void ApplyLaserSpellDamage();
+
+	UFUNCTION(BlueprintCallable, Category = "Laser Spell")
+	void DestroyLaserSpell();
 
 	/** Element Wheel Timeline Functions */
 	UFUNCTION(BlueprintCallable, Category = "Element Wheel")

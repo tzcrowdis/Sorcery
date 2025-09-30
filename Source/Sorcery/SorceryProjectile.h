@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Spell.h"
 #include "Sorcery.h"
 #include "Enemy.h"
 #include "SorceryProjectile.generated.h"
@@ -13,7 +14,7 @@ class UProjectileMovementComponent;
 class UNiagaraSystem;
 
 UCLASS(config=Game)
-class ASorceryProjectile : public AActor
+class ASorceryProjectile : public ASpell
 {
 	GENERATED_BODY()
 
@@ -29,9 +30,6 @@ class ASorceryProjectile : public AActor
 	UProjectileMovementComponent* ProjectileMovement;
 
 	/* Projectile Elemental Type */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
-	EElementalType ProjectileElement;
-
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	UMaterialInterface* M_Fire;
 
@@ -43,9 +41,6 @@ class ASorceryProjectile : public AActor
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	UMaterialInterface* M_Acid;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
-	float Damage;
 
 	/* Hit Effect */
 	UPROPERTY(EditAnywhere, Category = "Hit Effect")
@@ -69,16 +64,15 @@ public:
 
 	/** Returns CollisionComp subobject **/
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
+
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
 
 protected:
-	UClass* GetDamageType();
-
 	void SpawnHitEffect(AEnemy* EnemyHit, FVector Normal);
 
 public:
 	/* Functions to Change Projectile Properties */
-	void ChangeElementalType(EElementalType NewType);
+	virtual void ChangeElementalType(EElementalType NewType) override;
 };
 

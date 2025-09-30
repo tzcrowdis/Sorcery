@@ -91,8 +91,9 @@ void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 
 void ASorceryProjectile::ChangeElementalType(EElementalType NewType)
 {
-	ProjectileElement = NewType;
-	switch (ProjectileElement)
+	Super::ChangeElementalType(NewType);
+
+	switch (Element)
 	{
 		case EElementalType::Fire:
 			SphereMesh->SetMaterial(0, M_Fire);
@@ -109,27 +110,10 @@ void ASorceryProjectile::ChangeElementalType(EElementalType NewType)
 	}
 }
 
-UClass* ASorceryProjectile::GetDamageType()
-{
-	switch (ProjectileElement)
-	{
-		case EElementalType::Fire:
-			return UDT_Fire::StaticClass();
-		case EElementalType::Ice:
-			return UDT_Ice::StaticClass();
-		case EElementalType::Shock:
-			return UDT_Shock::StaticClass();
-		case EElementalType::Acid:
-			return UDT_Acid::StaticClass();
-	}
-
-	return nullptr;
-}
-
 void ASorceryProjectile::SpawnHitEffect(AEnemy* EnemyHit, FVector Normal)
 {
 	UNiagaraSystem* ElementHitEffect = nullptr;
-	switch (ProjectileElement)
+	switch (Element)
 	{
 		case EElementalType::Fire:
 			ElementHitEffect = FireHitEffect;

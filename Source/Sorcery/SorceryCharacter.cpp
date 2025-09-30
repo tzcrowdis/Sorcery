@@ -18,6 +18,8 @@
 
 #include "NiagaraFunctionLibrary.h"
 
+#include "LaserSpell.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -82,6 +84,14 @@ ASorceryCharacter::ASorceryCharacter()
 	MuzzleFlashComp->SetupAttachment(GetMesh1P());
 	if (FireSpellMuzzleFlash)
 		MuzzleFlashComp->SetAsset(FireSpellMuzzleFlash);
+
+	// laser spell
+	//LaserSpellComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LaserSpell"));
+	//LaserSpellComp->SetupAttachment(GetMesh1P());
+	//LaserSpellComp->SetAsset(LaserSpellSystem);
+	//LaserSpell = CreateDefaultSubobject<ALaserSpell>(TEXT("LaserSpell"));
+	//LaserSpell->AttachToComponent(GetMesh1P(), FAttachmentTransformRules::KeepRelativeTransform);
+	//LaserSpell->SetActorRelativeLocation(MuzzleFlashComp->GetRelativeLocation());
 }
 
 void ASorceryCharacter::BeginPlay()
@@ -128,7 +138,10 @@ void ASorceryCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::Dash);
 
 		// Default Shooting
-		EnhancedInputComponent->BindAction(ShootDefaultAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ShootDefaultSpell);
+		//EnhancedInputComponent->BindAction(ShootDefaultAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ShootDefaultSpell);
+
+		EnhancedInputComponent->BindAction(ShootDefaultAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ShootLaserSpell);
+		EnhancedInputComponent->BindAction(DestroyLaserAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::DestroyLaserSpell);
 
 		// Rotate Element Wheel
 		EnhancedInputComponent->BindAction(ElementWheelLeft, ETriggerEvent::Triggered, this, &ASorceryCharacter::QueueElementWheelLeft);
@@ -136,7 +149,7 @@ void ASorceryCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	}
 	else
 	{
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input Component!"), *GetNameSafe(this));
 	}
 }
 
@@ -225,9 +238,7 @@ void ASorceryCharacter::ClearDashCooldown()
 void ASorceryCharacter::ShootDefaultSpell()
 {
 	if (GetController() == nullptr)
-	{
 		return;
-	}
 
 	// Try and fire a projectile
 	if (ProjectileClass != nullptr)
@@ -284,6 +295,25 @@ void ASorceryCharacter::ShootDefaultSpell()
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
 	}
 	*/
+}
+
+void ASorceryCharacter::ShootLaserSpell()
+{
+	// spawn laser (TODO do when equipping)
+	LaserSpell = GetWorld()->SpawnActor<ALaserSpell>(LaserSpellClass);
+	LaserSpell->AttachToComponent(MuzzleFlashComp, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	//FAttachmentTransformRules::ScaleRule
+	LaserSpell->ChangeElementalType(ActiveElement); // TESTING
+
+	LaserSpell->ShootLaser(FirstPersonCameraComponent);
+}
+
+void ASorceryCharacter::DestroyLaserSpell()
+{
+	LaserSpell->DestroyLaser();
+
+	// destroy laser (TODO do when unequipping)
+	LaserSpell->Destroy();
 }
 
 /*
@@ -426,6 +456,8 @@ void ASorceryCharacter::UpdateActiveElementalType()
 {
 	ASorceryProjectile* projectile = Cast<ASorceryProjectile>(ProjectileClass->GetDefaultObject());
 	if (projectile) projectile->ChangeElementalType(ActiveElement);
+
+	if (LaserSpell) LaserSpell->ChangeElementalType(ActiveElement);
 
 	switch (ActiveElement)
 	{
