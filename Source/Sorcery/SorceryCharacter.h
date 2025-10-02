@@ -49,13 +49,19 @@ class ASorceryCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
-	/** Shoot Default Projectile Input Action */
+	/** Shooting Input Actions */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* ShootDefaultAction;
+	class UInputAction* ShootPressedAction;
 
-	/** Shoot Laser Spell Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* DestroyLaserAction;
+	class UInputAction* ShootReleasedAction;
+
+	/* Equipping Spell Inputs */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* EquipElementalBall;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* EquipLaser;
 
 	/** Rotate Element Wheel Left Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -72,7 +78,9 @@ class ASorceryCharacter : public ACharacter
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims", meta = (AllowPrivateAccess = "true"))
 	class UAnimMontage* ElementWheelAnimMontage;
 
+	
 	/* Muzzle Flash */
+	/*
 	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
 	UNiagaraSystem* FireSpellMuzzleFlash;
 
@@ -87,21 +95,33 @@ class ASorceryCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
 	UNiagaraComponent* MuzzleFlashComp;
+	*/
 
-	/* Laser Spell */
-	//UPROPERTY(EditAnywhere, Category = "Spells")
-	//UNiagaraSystem* LaserSpellSystem;
-
-	//UPROPERTY(EditAnywhere, Category = "Spells")
-	//UNiagaraComponent* LaserSpellComp;
-
+	/* Spell Actors */
+	class AElementalBallSpell* ElementalBallSpell;
 	class ALaserSpell* LaserSpell;
-	
-public:
-	ASorceryCharacter();
 
 protected:
-	virtual void BeginPlay();
+	/* Dash */
+	int DashCount;
+	FTimerHandle DashCooldownTimer;
+	bool bDashCooldownActive;
+
+	/* Element Wheel Rotation Vars */
+	TQueue<int32> EWRotationQueue;
+	int32 EWCurrentRotation;
+	FRotator EWStartRotation;
+	FRotator EWPreviousRotation;
+	int32 EWLeftRotationValue;
+	int32 EWRightRotationValue;
+	FVector DefaultElementScale;
+	FVector SelectedElementScale;
+
+	/* Element Wheel Type */
+	EElementalType ActiveElement;
+
+	/* Equipped Spell */
+	ESpellEquipped ActiveSpell;
 
 public:
 	/** Dash Variables */
@@ -114,22 +134,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float DashCooldownTime;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim")
-	float MaxAimDistance;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim")
+	//float MaxAimDistance;
 
-	/** Default Projectile classes to spawn for each element */
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	TSubclassOf<class ASorceryProjectile> ProjectileClass;
+	/** Spell Classes and Variables */
+	UPROPERTY(EditAnywhere, Category = "Spells")
+	USceneComponent* SpellAttachPoint;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spells")
+	TSubclassOf<class AElementalBallSpell> ElementalBallSpellClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spells")
 	TSubclassOf<class ALaserSpell> LaserSpellClass;
-
-	/* Laser Vars */
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spells")
-	//bool LaserSpellFiring;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spells")
-	//float LaserSpellDamage;
 
 	/* Element Wheel */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
@@ -151,36 +167,22 @@ public:
 	USphereComponent* ElementSelectCollider;
 
 protected:
-	/* Dash */
-	int DashCount;
-	FTimerHandle DashCooldownTimer;
-	bool bDashCooldownActive;
-	
-	/* Element Wheel Rotation Vars */
-	TQueue<int32> EWRotationQueue;
-	int32 EWCurrentRotation;
-	FRotator EWStartRotation;
-	FRotator EWPreviousRotation;
-	int32 EWLeftRotationValue;
-	int32 EWRightRotationValue;
-	FVector DefaultElementScale;
-	FVector SelectedElementScale;
+	virtual void BeginPlay();
 
-	/* Element Wheel Type */
-	EElementalType ActiveElement;
-
-protected:
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	/* Called when switching between spells */
+	void EquipSpell(ESpellEquipped NewSpell);
+
 	/* aim */
-	FVector Aim();
+	//FVector Aim();
 
 	/* Show sphere where the player is aiming */
-	FVector AimDebug();
+	//FVector AimDebug();
 
 	/** Called for dash input */
 	void Dash();
@@ -195,6 +197,8 @@ protected:
 	// End of APawn interface
 
 public:
+	ASorceryCharacter();
+
 	/* Called every frame */
 	virtual void Tick(float DeltaTime) override;
 	
@@ -204,22 +208,12 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
-	/** Cast spell to shoot the Default Projectile */
+	/** Functions to handle shooting spells */
 	UFUNCTION(BlueprintCallable, Category = "Spells")
-	void ShootDefaultSpell();
+	void ShootSpell();
 
-	/** Cast spell to shoot the laser */
-	UFUNCTION(BlueprintCallable, Category = "Laser Spell")
-	void ShootLaserSpell();
-
-	//UFUNCTION(BlueprintCallable, Category = "Spells")
-	//void TickLaserSpell();
-
-	//UFUNCTION(BlueprintCallable, Category = "Spells")
-	//void ApplyLaserSpellDamage();
-
-	UFUNCTION(BlueprintCallable, Category = "Laser Spell")
-	void DestroyLaserSpell();
+	UFUNCTION(BlueprintCallable, Category = "Spells")
+	void ReleaseSpell();
 
 	/** Element Wheel Timeline Functions */
 	UFUNCTION(BlueprintCallable, Category = "Element Wheel")

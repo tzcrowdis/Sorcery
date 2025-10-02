@@ -23,25 +23,17 @@ void ALaserSpell::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	//if (!Sorcerer)
-	//	return;
-
-	//PlayerCamera = Sorcerer->GetFirstPersonCameraComponent();
-}
-
-void ALaserSpell::AttachLaser()
-{
-	// TODO setup location and stuff
-	//maybe do in sorcery character
 }
 
 void ALaserSpell::ChangeElementalType(EElementalType NewType)
 {
 	Super::ChangeElementalType(NewType);
 
-	LaserComp->Deactivate();
-	LaserComp->Activate(true);
+	if (LaserComp->IsActive())
+	{
+		LaserComp->Deactivate();
+		LaserComp->Activate(true);
+	}
 
 	switch (Element)
 	{
@@ -70,7 +62,6 @@ void ALaserSpell::ChangeElementalType(EElementalType NewType)
 */
 void ALaserSpell::ShootLaser(UCameraComponent* PlayerCamera)
 {
-	print("pressed");
 	Camera = PlayerCamera;
 
 	// Try and fire the laser
@@ -80,13 +71,8 @@ void ALaserSpell::ShootLaser(UCameraComponent* PlayerCamera)
 		if (World != nullptr)
 		{
 			// get the hit point
-			FHitResult HitResult;
-			FVector Start = Camera->GetComponentLocation();
-			FVector End = Start + Camera->GetForwardVector() * MaxLaserDistance;
-			FCollisionQueryParams CollisionQueryParams;
-			CollisionQueryParams.AddIgnoredActor(this);
-			GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, CollisionQueryParams);
-			
+			FHitResult HitResult = GetAimHitResult(Camera, MaxLaserDistance);
+
 			FVector LaserEndPoint = HitResult.TraceEnd;
 			if (HitResult.bBlockingHit)
 				LaserEndPoint = HitResult.ImpactPoint;
@@ -134,14 +120,7 @@ void ALaserSpell::TickLaser()
 void ALaserSpell::ApplyLaserDamage()
 {
 	// redo trace hit (probably expensive doing 2 traces in 1 frame)
-	FHitResult HitResult;
-	FVector Start = Camera->GetComponentLocation();
-	FVector End = Start + Camera->GetForwardVector() * MaxLaserDistance;
-	FCollisionQueryParams CollisionQueryParams;
-	CollisionQueryParams.AddIgnoredActor(this);
-	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, CollisionQueryParams);
-
-	print("apply damage");
+	FHitResult HitResult = GetAimHitResult(Camera, MaxLaserDistance);
 
 	// apply damage if enemy is hit
 	AEnemy* Enemy = Cast<AEnemy>(HitResult.GetActor());
@@ -168,10 +147,9 @@ void ALaserSpell::ApplyLaserDamage()
 	}
 }
 
-void ALaserSpell::DestroyLaser()
+void ALaserSpell::DeactivateLaser()
 {
-	// destroy the laser component (or just disable)
+	// disable the laser component
 	LaserComp->Deactivate();
 	LaserFiring = false;
-	print("released");
 }

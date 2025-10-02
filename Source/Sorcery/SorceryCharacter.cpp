@@ -18,6 +18,7 @@
 
 #include "NiagaraFunctionLibrary.h"
 
+#include "ElementalBallSpell.h"
 #include "LaserSpell.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -76,22 +77,9 @@ ASorceryCharacter::ASorceryCharacter()
 	DashCount = 0;
 	bDashCooldownActive = false;
 
-	// aim variables
-	MaxAimDistance = 5000.f;
-
-	// muzzle flash
-	MuzzleFlashComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MuzzleFlashEffect"));
-	MuzzleFlashComp->SetupAttachment(GetMesh1P());
-	if (FireSpellMuzzleFlash)
-		MuzzleFlashComp->SetAsset(FireSpellMuzzleFlash);
-
-	// laser spell
-	//LaserSpellComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LaserSpell"));
-	//LaserSpellComp->SetupAttachment(GetMesh1P());
-	//LaserSpellComp->SetAsset(LaserSpellSystem);
-	//LaserSpell = CreateDefaultSubobject<ALaserSpell>(TEXT("LaserSpell"));
-	//LaserSpell->AttachToComponent(GetMesh1P(), FAttachmentTransformRules::KeepRelativeTransform);
-	//LaserSpell->SetActorRelativeLocation(MuzzleFlashComp->GetRelativeLocation());
+	// origin point for spells
+	SpellAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("SpellAttachPoint"));
+	SpellAttachPoint->SetupAttachment(GetMesh1P());
 }
 
 void ASorceryCharacter::BeginPlay()
@@ -109,6 +97,9 @@ void ASorceryCharacter::BeginPlay()
 
 	ActiveElement = EElementalType::Fire;
 	UpdateActiveElementalType();
+
+	ActiveSpell = ESpellEquipped::ElementalBall; // NOTE default should be elemental ball
+	EquipSpell(ActiveSpell);
 }
 
 void ASorceryCharacter::Tick(float DeltaTime)
@@ -137,15 +128,17 @@ void ASorceryCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		// Dashing
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::Dash);
 
-		// Default Shooting
-		//EnhancedInputComponent->BindAction(ShootDefaultAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ShootDefaultSpell);
-
-		EnhancedInputComponent->BindAction(ShootDefaultAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ShootLaserSpell);
-		EnhancedInputComponent->BindAction(DestroyLaserAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::DestroyLaserSpell);
+		// Shooting
+		EnhancedInputComponent->BindAction(ShootPressedAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ShootSpell);
+		EnhancedInputComponent->BindAction(ShootReleasedAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ReleaseSpell);
 
 		// Rotate Element Wheel
 		EnhancedInputComponent->BindAction(ElementWheelLeft, ETriggerEvent::Triggered, this, &ASorceryCharacter::QueueElementWheelLeft);
 		EnhancedInputComponent->BindAction(ElementWheelRight, ETriggerEvent::Triggered, this, &ASorceryCharacter::QueueElementWheelRight);
+		
+		// Equip spells
+		EnhancedInputComponent->BindAction(EquipElementalBall, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::ElementalBall);
+		EnhancedInputComponent->BindAction(EquipLaser, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Laser);
 	}
 	else
 	{
@@ -178,22 +171,6 @@ void ASorceryCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
-}
-
-FVector ASorceryCharacter::Aim()
-{
-	FHitResult HitResult;
-	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
-	FVector End = Start + FirstPersonCameraComponent->GetForwardVector() * MaxAimDistance;
-	FCollisionQueryParams CollisionQueryParams;
-	CollisionQueryParams.AddIgnoredActor(this);
-	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, CollisionQueryParams);
-
-	FVector AimPoint = End;
-	if (HitResult.bBlockingHit)
-		AimPoint = HitResult.Location;
-
-	return AimPoint;
 }
 
 void ASorceryCharacter::Dash()
@@ -235,85 +212,73 @@ void ASorceryCharacter::ClearDashCooldown()
 /*
 	SPELL FUNCTIONS
 */
-void ASorceryCharacter::ShootDefaultSpell()
+void ASorceryCharacter::EquipSpell(ESpellEquipped NewSpell)
 {
-	if (GetController() == nullptr)
-		return;
-
-	// Try and fire a projectile
-	if (ProjectileClass != nullptr)
+	// remove old spell
+	switch (ActiveSpell)
 	{
-		UWorld* const World = GetWorld();
-		if (World != nullptr)
-		{
-			// Spawn location
-			/*
-			const USkeletalMeshSocket* SpellOffsetSocket = GetMesh1P()->GetSocketByName("SpellRSocket");
-			if (!SpellOffsetSocket)
-				return;
-			const FVector SpawnLocation = SpellOffsetSocket->GetSocketLocation(GetMesh1P());
-			*/
-			const FVector SpawnLocation = MuzzleFlashComp->GetComponentLocation();
+		case ESpellEquipped::ElementalBall:
+			if (ElementalBallSpell) ElementalBallSpell->Destroy();
+			break;
 
-			// Spawn rotation
-			FVector AimPoint = Aim();
-			FVector Direction = AimPoint - SpawnLocation;
-			Direction.Normalize();
-			const FRotator SpawnRotation = Direction.Rotation();
-			
-			//Set Spawn Collision Handling Override
-			FActorSpawnParameters ActorSpawnParams;
-			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-
-			// Spawn the projectile at the muzzle
-			World->SpawnActor<ASorceryProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-
-			// muzzle flash
-			if (MuzzleFlashComp)
-			{
-				if (MuzzleFlashComp->IsActive())
-					MuzzleFlashComp->Deactivate();
-
-				MuzzleFlashComp->SetWorldRotation(SpawnRotation);
-				MuzzleFlashComp->Activate();
-			}
-			
-			// animation
-			UAnimInstance* AnimInstance = GetMesh1P()->GetAnimInstance();
-			if (AnimInstance && SpellsAnimMontage)
-			{
-				AnimInstance->Montage_Play(SpellsAnimMontage, 1.f);
-				AnimInstance->Montage_JumpToSection(FName("ShootDefaultSpell"), SpellsAnimMontage);
-			}
-		}
+		case ESpellEquipped::Laser:
+			if (LaserSpell) LaserSpell->Destroy();
+			break;
 	}
+	
+	// update active spell
+	ActiveSpell = NewSpell;
 
-	/*
-	// Try and play the sound if specified
-	if (FireSound != nullptr)
+	// equip new spell
+	switch (ActiveSpell)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
+		case ESpellEquipped::ElementalBall:
+			ElementalBallSpell = GetWorld()->SpawnActor<AElementalBallSpell>(ElementalBallSpellClass);
+			ElementalBallSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			ElementalBallSpell->ChangeElementalType(ActiveElement);
+			break;
+
+		case ESpellEquipped::Laser:
+			LaserSpell = GetWorld()->SpawnActor<ALaserSpell>(LaserSpellClass);
+			LaserSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			LaserSpell->ChangeElementalType(ActiveElement);
+			break;
 	}
-	*/
 }
 
-void ASorceryCharacter::ShootLaserSpell()
+void ASorceryCharacter::ShootSpell()
 {
-	// spawn laser (TODO do when equipping)
-	LaserSpell = GetWorld()->SpawnActor<ALaserSpell>(LaserSpellClass);
-	LaserSpell->AttachToComponent(MuzzleFlashComp, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-	//FAttachmentTransformRules::ScaleRule
-	LaserSpell->ChangeElementalType(ActiveElement); // TESTING
+	switch (ActiveSpell)
+	{
+		case ESpellEquipped::ElementalBall:
+			ElementalBallSpell->ShootElementalBall(this);
+			break;
 
-	LaserSpell->ShootLaser(FirstPersonCameraComponent);
+		case ESpellEquipped::Laser:
+			LaserSpell->ShootLaser(FirstPersonCameraComponent);
+			break;
+	}
+
+	UAnimInstance* AnimInstance = GetMesh1P()->GetAnimInstance();
+	if (AnimInstance && SpellsAnimMontage)
+	{
+		AnimInstance->Montage_Play(SpellsAnimMontage, 1.f);
+		AnimInstance->Montage_JumpToSection(FName("ShootDefaultSpell"), SpellsAnimMontage);
+	}
 }
 
-void ASorceryCharacter::DestroyLaserSpell()
+void ASorceryCharacter::ReleaseSpell()
 {
-	LaserSpell->DestroyLaser();
+	switch (ActiveSpell)
+	{
+		case ESpellEquipped::ElementalBall:
+			// no action necessary
+			break;
 
-	// destroy laser (TODO do when unequipping)
-	LaserSpell->Destroy();
+		case ESpellEquipped::Laser:
+			LaserSpell->DeactivateLaser();
+			break;
+	}
 }
 
 /*
@@ -454,25 +419,14 @@ void ASorceryCharacter::ElementSelectOverlapEnd(UPrimitiveComponent* OverlappedC
 
 void ASorceryCharacter::UpdateActiveElementalType()
 {
-	ASorceryProjectile* projectile = Cast<ASorceryProjectile>(ProjectileClass->GetDefaultObject());
-	if (projectile) projectile->ChangeElementalType(ActiveElement);
-
-	if (LaserSpell) LaserSpell->ChangeElementalType(ActiveElement);
-
-	switch (ActiveElement)
+	switch (ActiveSpell)
 	{
-		case EElementalType::Fire:
-			MuzzleFlashComp->SetAsset(FireSpellMuzzleFlash);
+		case ESpellEquipped::ElementalBall:
+			if (ElementalBallSpell) ElementalBallSpell->ChangeElementalType(ActiveElement);
 			break;
-		case EElementalType::Ice:
-			MuzzleFlashComp->SetAsset(IceSpellMuzzleFlash);
-			break;
-		case EElementalType::Shock:
-			MuzzleFlashComp->SetAsset(ShockSpellMuzzleFlash);
-			break;
-		case EElementalType::Acid:
-			MuzzleFlashComp->SetAsset(AcidSpellMuzzleFlash);
+
+		case ESpellEquipped::Laser:
+			if (LaserSpell) LaserSpell->ChangeElementalType(ActiveElement);
 			break;
 	}
-	MuzzleFlashComp->Deactivate();
 }

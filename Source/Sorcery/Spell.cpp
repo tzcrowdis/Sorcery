@@ -2,6 +2,7 @@
 
 
 #include "Spell.h"
+#include "Camera/CameraComponent.h"
 
 #include "DT_Fire.h"
 #include "DT_Ice.h"
@@ -29,6 +30,34 @@ void ASpell::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+FHitResult ASpell::GetAimHitResult(UCameraComponent* PlayerCamera, float MaxAimDistance)
+{
+	FHitResult HitResult;
+	FVector Start = PlayerCamera->GetComponentLocation();
+	FVector End = Start + PlayerCamera->GetForwardVector() * MaxAimDistance;
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(this);
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, CollisionQueryParams);
+	return HitResult;
+}
+
+FVector ASpell::GetAimLocation(UCameraComponent* PlayerCamera, float MaxAimDistance)
+{
+	FHitResult HitResult;
+	FVector Start = PlayerCamera->GetComponentLocation();
+	FVector End = Start + PlayerCamera->GetForwardVector() * MaxAimDistance;
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(this);
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility, CollisionQueryParams);
+
+	FVector AimPoint = End;
+	if (HitResult.bBlockingHit)
+		AimPoint = HitResult.Location;
+
+	return AimPoint;
+}
+
 
 UClass* ASpell::GetDamageType()
 {

@@ -61,9 +61,6 @@ public:
 	bool LaserFiring;
 
 	UFUNCTION(BlueprintCallable, Category = "Spells")
-	void AttachLaser();
-
-	UFUNCTION(BlueprintCallable, Category = "Spells")
 	void ShootLaser(UCameraComponent* PlayerCamera);
 
 	UFUNCTION(BlueprintCallable, Category = "Spells")
@@ -73,7 +70,7 @@ public:
 	void ApplyLaserDamage();
 
 	UFUNCTION(BlueprintCallable, Category = "Spells")
-	void DestroyLaser();
+	void DeactivateLaser();
 
 	virtual void ChangeElementalType(EElementalType NewType) override;
 };

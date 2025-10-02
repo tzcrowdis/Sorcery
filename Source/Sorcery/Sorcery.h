@@ -20,7 +20,7 @@
 
 #define warnf_k(Key, Format, ...) if (GEngine) GEngine->AddOnScreenDebugMessage(Key, 2.f, FColor::Yellow, FString::Printf(TEXT(Format), ##__VA_ARGS__))
 
-// NOTE this enum should probably be in its own header file
+// NOTE these enums should probably be in its own header file
 UENUM(BlueprintType)
 enum class EElementalType : uint8
 {
@@ -28,4 +28,11 @@ enum class EElementalType : uint8
     Ice UMETA(DisplayName = "Ice"),
     Shock UMETA(DisplayName = "Shock"),
     Acid UMETA(DisplayName = "Acid")
+};
+
+UENUM(BlueprintType)
+enum class ESpellEquipped : uint8
+{
+    ElementalBall UMETA(DisplayName = "Elemental Ball Spell"),
+    Laser UMETA(DisplayName = "Laser Spell")
 };

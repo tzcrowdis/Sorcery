@@ -7,6 +7,8 @@
 #include "Sorcery.h"
 #include "Spell.generated.h"
 
+class UCameraComponent;
+
 UCLASS(config = Game)
 class SORCERY_API ASpell : public AActor
 {
@@ -28,6 +30,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	UClass* GetDamageType();
+
+	FHitResult GetAimHitResult(UCameraComponent* PlayerCamera, float MaxAimDistance);
+
+	FVector GetAimLocation(UCameraComponent* PlayerCamera, float MaxAimDistance);
 
 public:	
 	// Called every frame
