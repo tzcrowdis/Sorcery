@@ -73,3 +73,9 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# large external assets from the marketplace
+Content/Stylised_Dungeon_Pack/*
+Content/AncientTreasures/*
+Content/Stylized_LowPoly_Rocks_JayantChakradhariAssets/*
+Content/StylizedEnvironment/*
