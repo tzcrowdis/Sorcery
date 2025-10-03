@@ -75,7 +75,14 @@ void ALaserSpell::ShootLaser(UCameraComponent* PlayerCamera)
 
 			FVector LaserEndPoint = HitResult.TraceEnd;
 			if (HitResult.bBlockingHit)
+			{
 				LaserEndPoint = HitResult.ImpactPoint;
+				LaserComp->SetEmitterEnable(FName("Sparks"), true);
+			}
+			else
+			{
+				LaserComp->SetEmitterEnable(FName("Sparks"), false);
+			}
 
 			// enable the laser effect
 			LaserComp->Activate();
@@ -112,7 +119,14 @@ void ALaserSpell::TickLaser()
 
 	FVector LaserEndPoint = HitResult.TraceEnd;
 	if (HitResult.bBlockingHit)
+	{
 		LaserEndPoint = HitResult.ImpactPoint;
+		LaserComp->SetEmitterEnable(FName("Sparks"), true);
+	}
+	else
+	{
+		LaserComp->SetEmitterEnable(FName("Sparks"), false);
+	}
 
 	LaserComp->SetVectorParameter(FName("BeamEnd"), LaserEndPoint);
 }
@@ -143,7 +157,7 @@ void ALaserSpell::ApplyLaserDamage()
 	// Only add impulse if we hit a physics object
 	if ((HitResult.GetComponent() != nullptr) && HitResult.GetComponent()->IsSimulatingPhysics())
 	{
-		HitResult.GetComponent()->AddImpulseAtLocation(GetVelocity() * 100.0f, HitResult.ImpactPoint);
+		HitResult.GetComponent()->AddImpulseAtLocation(HitResult.ImpactNormal * -100.0f, HitResult.ImpactPoint);
 	}
 }
 

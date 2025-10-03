@@ -22,16 +22,7 @@ class SORCERY_API AElementalBallSpell : public ASpell
 
 	/* Muzzle flash */
 	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
-	UNiagaraSystem* FireSpellMuzzleFlash;
-
-	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
-	UNiagaraSystem* IceSpellMuzzleFlash;
-
-	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
-	UNiagaraSystem* ShockSpellMuzzleFlash;
-
-	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
-	UNiagaraSystem* AcidSpellMuzzleFlash;
+	UNiagaraSystem* SpellMuzzleFlash;
 
 	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
 	UNiagaraComponent* MuzzleFlashComp;

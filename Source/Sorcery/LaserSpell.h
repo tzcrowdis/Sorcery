@@ -22,19 +22,6 @@ class SORCERY_API ALaserSpell : public ASpell
 	UPROPERTY(EditAnywhere, Category = "Spells")
 	float MaxLaserDistance;
 
-	// color of laser beam and sparks
-	UPROPERTY(EditAnywhere, Category = "Laser Color")
-	FLinearColor FireColor;
-
-	UPROPERTY(EditAnywhere, Category = "Laser Color")
-	FLinearColor IceColor;
-
-	UPROPERTY(EditAnywhere, Category = "Laser Color")
-	FLinearColor ShockColor;
-
-	UPROPERTY(EditAnywhere, Category = "Laser Color")
-	FLinearColor AcidColor;
-
 	// color of origin orb
 	UPROPERTY(EditAnywhere, Category = "Origin Material")
 	UMaterialInterface* M_Fire;

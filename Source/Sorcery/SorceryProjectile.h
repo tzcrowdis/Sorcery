@@ -44,16 +44,7 @@ class ASorceryProjectile : public ASpell
 
 	/* Hit Effect */
 	UPROPERTY(EditAnywhere, Category = "Hit Effect")
-	UNiagaraSystem* FireHitEffect;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Effect")
-	UNiagaraSystem* IceHitEffect;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Effect")
-	UNiagaraSystem* ShockHitEffect;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Effect")
-	UNiagaraSystem* AcidHitEffect;
+	UNiagaraSystem* SpellHitEffect;
 
 public:
 	ASorceryProjectile();

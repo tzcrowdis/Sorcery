@@ -63,14 +63,14 @@ UClass* ASpell::GetDamageType()
 {
 	switch (Element)
 	{
-	case EElementalType::Fire:
-		return UDT_Fire::StaticClass();
-	case EElementalType::Ice:
-		return UDT_Ice::StaticClass();
-	case EElementalType::Shock:
-		return UDT_Shock::StaticClass();
-	case EElementalType::Acid:
-		return UDT_Acid::StaticClass();
+		case EElementalType::Fire:
+			return UDT_Fire::StaticClass();
+		case EElementalType::Ice:
+			return UDT_Ice::StaticClass();
+		case EElementalType::Shock:
+			return UDT_Shock::StaticClass();
+		case EElementalType::Acid:
+			return UDT_Acid::StaticClass();
 	}
 
 	return nullptr;

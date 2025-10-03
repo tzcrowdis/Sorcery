@@ -92,7 +92,7 @@ void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 void ASorceryProjectile::ChangeElementalType(EElementalType NewType)
 {
 	Super::ChangeElementalType(NewType);
-
+	
 	switch (Element)
 	{
 		case EElementalType::Fire:
@@ -112,33 +112,32 @@ void ASorceryProjectile::ChangeElementalType(EElementalType NewType)
 
 void ASorceryProjectile::SpawnHitEffect(AEnemy* EnemyHit, FVector Normal)
 {
-	UNiagaraSystem* ElementHitEffect = nullptr;
-	switch (Element)
-	{
-		case EElementalType::Fire:
-			ElementHitEffect = FireHitEffect;
-			break;
-		case EElementalType::Ice:
-			ElementHitEffect = IceHitEffect;
-			break;
-		case EElementalType::Shock:
-			ElementHitEffect = ShockHitEffect;
-			break;
-		case EElementalType::Acid:
-			ElementHitEffect = AcidHitEffect;
-			break;
-	}
-
-	if (ElementHitEffect == nullptr)
+	if (SpellHitEffect == nullptr)
 		return;
 
 	UNiagaraComponent* HitEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 		GetWorld(),
-		ElementHitEffect,
+		SpellHitEffect,
 		GetActorLocation(),
 		UKismetMathLibrary::Conv_VectorToRotator(Normal),
 		FVector(0.5f, 0.5f, 0.5f)
 	);
+	
+	switch (Element)
+	{
+		case EElementalType::Fire:
+			HitEffect->SetColorParameter(FName("HitColor"), FireColor);
+			break;
+		case EElementalType::Ice:
+			HitEffect->SetColorParameter(FName("HitColor"), IceColor);
+			break;
+		case EElementalType::Shock:
+			HitEffect->SetColorParameter(FName("HitColor"), ShockColor);
+			break;
+		case EElementalType::Acid:
+			HitEffect->SetColorParameter(FName("HitColor"), AcidColor);
+			break;
+	}
 
 	if (EnemyHit)
 	{

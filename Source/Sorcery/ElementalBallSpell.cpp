@@ -23,23 +23,20 @@ void AElementalBallSpell::ChangeElementalType(EElementalType NewType)
 {
 	Super::ChangeElementalType(NewType);
 
-	ASorceryProjectile* projectile = Cast<ASorceryProjectile>(ProjectileClass->GetDefaultObject());
-	if (projectile) projectile->ChangeElementalType(Element);
-
 	switch (Element)
 	{
-	case EElementalType::Fire:
-		MuzzleFlashComp->SetAsset(FireSpellMuzzleFlash);
-		break;
-	case EElementalType::Ice:
-		MuzzleFlashComp->SetAsset(IceSpellMuzzleFlash);
-		break;
-	case EElementalType::Shock:
-		MuzzleFlashComp->SetAsset(ShockSpellMuzzleFlash);
-		break;
-	case EElementalType::Acid:
-		MuzzleFlashComp->SetAsset(AcidSpellMuzzleFlash);
-		break;
+		case EElementalType::Fire:
+			MuzzleFlashComp->SetColorParameter(FName("FlashColor"), FireColor);
+			break;
+		case EElementalType::Ice:
+			MuzzleFlashComp->SetColorParameter(FName("FlashColor"), IceColor);
+			break;
+		case EElementalType::Shock:
+			MuzzleFlashComp->SetColorParameter(FName("FlashColor"), ShockColor);
+			break;
+		case EElementalType::Acid:
+			MuzzleFlashComp->SetColorParameter(FName("FlashColor"), AcidColor);
+			break;
 	}
 	MuzzleFlashComp->Deactivate();
 }
@@ -74,7 +71,8 @@ void AElementalBallSpell::ShootElementalBall(ASorceryCharacter* Sorcerer)
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
 			// Spawn the projectile at the muzzle
-			World->SpawnActor<ASorceryProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			ASorceryProjectile* ball = World->SpawnActor<ASorceryProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			ball->ChangeElementalType(Element);
 
 			// muzzle flash
 			if (MuzzleFlashComp)

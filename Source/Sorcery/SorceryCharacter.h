@@ -78,25 +78,6 @@ class ASorceryCharacter : public ACharacter
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims", meta = (AllowPrivateAccess = "true"))
 	class UAnimMontage* ElementWheelAnimMontage;
 
-	
-	/* Muzzle Flash */
-	/*
-	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
-	UNiagaraSystem* FireSpellMuzzleFlash;
-
-	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
-	UNiagaraSystem* IceSpellMuzzleFlash;
-
-	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
-	UNiagaraSystem* ShockSpellMuzzleFlash;
-
-	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
-	UNiagaraSystem* AcidSpellMuzzleFlash;
-
-	UPROPERTY(EditAnywhere, Category = "Muzzle Flash")
-	UNiagaraComponent* MuzzleFlashComp;
-	*/
-
 	/* Spell Actors */
 	class AElementalBallSpell* ElementalBallSpell;
 	class ALaserSpell* LaserSpell;
@@ -133,9 +114,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float DashCooldownTime;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Aim")
-	//float MaxAimDistance;
 
 	/** Spell Classes and Variables */
 	UPROPERTY(EditAnywhere, Category = "Spells")
@@ -177,12 +155,6 @@ protected:
 
 	/* Called when switching between spells */
 	void EquipSpell(ESpellEquipped NewSpell);
-
-	/* aim */
-	//FVector Aim();
-
-	/* Show sphere where the player is aiming */
-	//FVector AimDebug();
 
 	/** Called for dash input */
 	void Dash();
