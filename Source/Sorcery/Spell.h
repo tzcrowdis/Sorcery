@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Sorcery.h"
+#include "Components/Image.h"
 #include "Spell.generated.h"
 
 class UCameraComponent;
@@ -15,6 +16,7 @@ class SORCERY_API ASpell : public AActor
 	GENERATED_BODY()
 
 protected:
+	// Particle Color
 	UPROPERTY(EditAnywhere, Category = "Element Color")
 	FLinearColor FireColor;
 
@@ -26,6 +28,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Element Color")
 	FLinearColor AcidColor;
+
+	// Reticle
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Reticle")
+	UImage* ReticleTexture;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
@@ -53,4 +59,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void ChangeElementalType(EElementalType NewType);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Reticle")
+	void UpdateReticle();
 };

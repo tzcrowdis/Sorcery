@@ -46,6 +46,10 @@ class ASorceryProjectile : public ASpell
 	UPROPERTY(EditAnywhere, Category = "Hit Effect")
 	UNiagaraSystem* SpellHitEffect;
 
+	/* Blow Up Effect */
+	UPROPERTY(EditAnywhere, Category = "Death Effect")
+	UNiagaraSystem* SpellDeathEffect;
+
 public:
 	ASorceryProjectile();
 
@@ -60,7 +64,9 @@ public:
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
 
 protected:
-	void SpawnHitEffect(AEnemy* EnemyHit, FVector Normal);
+	void SpawnHitEffect(FVector Normal);
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 public:
 	/* Functions to Change Projectile Properties */

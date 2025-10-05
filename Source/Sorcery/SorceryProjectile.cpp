@@ -85,7 +85,8 @@ void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 			Destroy();
 		}
 
-		SpawnHitEffect(Enemy, Hit.Normal);
+		if (!Enemy)
+			SpawnHitEffect(Hit.Normal);
 	}
 }
 
@@ -110,7 +111,7 @@ void ASorceryProjectile::ChangeElementalType(EElementalType NewType)
 	}
 }
 
-void ASorceryProjectile::SpawnHitEffect(AEnemy* EnemyHit, FVector Normal)
+void ASorceryProjectile::SpawnHitEffect(FVector Normal)
 {
 	if (SpellHitEffect == nullptr)
 		return;
@@ -138,9 +139,34 @@ void ASorceryProjectile::SpawnHitEffect(AEnemy* EnemyHit, FVector Normal)
 			HitEffect->SetColorParameter(FName("HitColor"), AcidColor);
 			break;
 	}
+}
 
-	if (EnemyHit)
+void ASorceryProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (SpellDeathEffect == nullptr)
+		return;
+
+	UNiagaraComponent* DeathEffect = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		GetWorld(),
+		SpellDeathEffect,
+		GetActorLocation(),
+		FRotator(0, 0, 0),
+		FVector(0.5f, 0.5f, 0.5f)
+	);
+
+	switch (Element)
 	{
-		HitEffect->AttachToComponent(EnemyHit->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+	case EElementalType::Fire:
+		DeathEffect->SetColorParameter(FName("OrbColor"), FireColor);
+		break;
+	case EElementalType::Ice:
+		DeathEffect->SetColorParameter(FName("OrbColor"), IceColor);
+		break;
+	case EElementalType::Shock:
+		DeathEffect->SetColorParameter(FName("OrbColor"), ShockColor);
+		break;
+	case EElementalType::Acid:
+		DeathEffect->SetColorParameter(FName("OrbColor"), AcidColor);
+		break;
 	}
 }

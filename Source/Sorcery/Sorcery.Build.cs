@@ -16,7 +16,15 @@ public class Sorcery : ModuleRules
 			"EnhancedInput", 
 			"NavigationSystem",
 			"AIModule",
-			"Niagara"
+			"Niagara",
+            "UMG"
+        });
+
+		/*
+        PrivateDependencyModuleNames.AddRange(new string[] { 
+			"Slate", 
+			"SlateCore" 
 		});
-	}
+		*/
+    }
 }

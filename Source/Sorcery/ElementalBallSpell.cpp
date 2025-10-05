@@ -72,7 +72,7 @@ void AElementalBallSpell::ShootElementalBall(ASorceryCharacter* Sorcerer)
 
 			// Spawn the projectile at the muzzle
 			ASorceryProjectile* ball = World->SpawnActor<ASorceryProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-			ball->ChangeElementalType(Element);
+			if (ball) ball->ChangeElementalType(Element);
 
 			// muzzle flash
 			if (MuzzleFlashComp)

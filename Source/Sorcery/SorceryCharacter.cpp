@@ -236,12 +236,14 @@ void ASorceryCharacter::EquipSpell(ESpellEquipped NewSpell)
 			ElementalBallSpell = GetWorld()->SpawnActor<AElementalBallSpell>(ElementalBallSpellClass);
 			ElementalBallSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 			ElementalBallSpell->ChangeElementalType(ActiveElement);
+			ElementalBallSpell->UpdateReticle();
 			break;
 
 		case ESpellEquipped::Laser:
 			LaserSpell = GetWorld()->SpawnActor<ALaserSpell>(LaserSpellClass);
 			LaserSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 			LaserSpell->ChangeElementalType(ActiveElement);
+			LaserSpell->UpdateReticle();
 			break;
 	}
 }
