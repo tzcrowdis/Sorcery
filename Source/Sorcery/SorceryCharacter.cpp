@@ -192,18 +192,6 @@ void ASorceryCharacter::Dash()
 	if (bDashCooldownActive)
 		return;
 
-	// cooldown if you've reached the max consecutive dashes
-	if (DashCount == DashMaxCount)
-	{
-		GetWorldTimerManager().ClearTimer(DashResetTimer);
-		bDashResetTimerActive = false;
-
-		GetWorldTimerManager().SetTimer(DashCooldownTimer, this, &ASorceryCharacter::ClearDashCooldown, DashCooldownTime);
-		bDashCooldownActive = true;
-		print("dash cooldown active");
-		return;
-	}
-
 	// dash horizontally according to movement input
 	FVector DashVector = GetPendingMovementInputVector();
 	DashVector.Z = 0.f;
@@ -218,6 +206,17 @@ void ASorceryCharacter::Dash()
 			GetWorldTimerManager().ClearTimer(DashResetTimer);
 
 		GetWorldTimerManager().SetTimer(DashResetTimer, this, &ASorceryCharacter::ResetDashCount, DashResetTime);
+	}
+
+	// cooldown if you've reached the max consecutive dashes
+	if (DashCount == DashMaxCount)
+	{
+		GetWorldTimerManager().ClearTimer(DashResetTimer);
+		bDashResetTimerActive = false;
+
+		GetWorldTimerManager().SetTimer(DashCooldownTimer, this, &ASorceryCharacter::ClearDashCooldown, DashCooldownTime);
+		bDashCooldownActive = true;
+		print("dash cooldown active");
 	}
 }
 
@@ -242,6 +241,19 @@ void ASorceryCharacter::ToggleSkillsMenu()
 	AController* controller = GetController();
 	ASorceryPlayerController* SorceryController = Cast<ASorceryPlayerController>(controller);
 	SorceryController->ToggleSkillsMenu();
+	
+	switch (ActiveSpell)
+	{
+		case ESpellEquipped::ElementalBall:
+			ElementalBallSpell->UpdateDamage(DamagePercent);
+			ElementalBallSpell->UpdateAttackSpeed(AttackSpeedPercent);
+			break;
+
+		case ESpellEquipped::Laser:
+			LaserSpell->UpdateDamage(DamagePercent);
+			LaserSpell->UpdateAttackSpeed(AttackSpeedPercent);
+			break;
+	}
 }
 
 float ASorceryCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
