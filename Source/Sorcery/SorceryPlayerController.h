@@ -18,9 +18,12 @@ class SORCERY_API ASorceryPlayerController : public APlayerController
 	
 protected:
 
-	/** Input Mapping Context to be used for player input */
+	/** Input Mapping Context to be used for gameplay and UI */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputMappingContext* InputMappingContext;
+	UInputMappingContext* GameInputMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputMappingContext* SkillsMenuInputMappingContext;
 
 	// Begin Actor interface
 protected:
@@ -28,4 +31,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	// End Actor interface
+
+public:
+
+	// UI functions
+	UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+	void ToggleSkillsMenu();
 };

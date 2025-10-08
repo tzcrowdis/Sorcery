@@ -56,6 +56,10 @@ class ASorceryCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ShootReleasedAction;
 
+	/** Skills Menu Input Actions */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* SkillsMenuAction;
+
 	/* Equipping Spell Inputs */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* EquipElementalBall;
@@ -87,6 +91,8 @@ protected:
 	int DashCount;
 	FTimerHandle DashCooldownTimer;
 	bool bDashCooldownActive;
+	FTimerHandle DashResetTimer;
+	bool bDashResetTimerActive;
 
 	/* Element Wheel Rotation Vars */
 	TQueue<int32> EWRotationQueue;
@@ -105,6 +111,22 @@ protected:
 	ESpellEquipped ActiveSpell;
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Health")
+	float Health;
+	
+	/* Modifiable Skills/Stats */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
+	float MaxHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
+	float DamagePercent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
+	float AttackSpeedPercent;
+
+	// move speed handled by character movement
+	// jump height, count, etc. handled by character movement
+
 	/** Dash Variables */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float DashVelocity;
@@ -115,6 +137,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float DashCooldownTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	float DashResetTime;
+
+	
 	/** Spell Classes and Variables */
 	UPROPERTY(EditAnywhere, Category = "Spells")
 	USceneComponent* SpellAttachPoint;
@@ -144,6 +170,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
 	USphereComponent* ElementSelectCollider;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Element Wheel")
+	float ActiveElementScale;
+
 protected:
 	virtual void BeginPlay();
 
@@ -156,9 +185,13 @@ protected:
 	/* Called when switching between spells */
 	void EquipSpell(ESpellEquipped NewSpell);
 
+	/* toggles skills menu */
+	void ToggleSkillsMenu();
+
 	/** Called for dash input */
 	void Dash();
 	void ClearDashCooldown();
+	void ResetDashCount();
 
 	/* Element Wheel Input Queue Functions */
 	void QueueElementWheelLeft();
@@ -179,6 +212,15 @@ public:
 
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	virtual float TakeDamage
+	(
+		float DamageAmount,
+		FDamageEvent const& DamageEvent,
+		AController* EventInstigator,
+		AActor* DamageCauser
+	) override;
 
 	/** Functions to handle shooting spells */
 	UFUNCTION(BlueprintCallable, Category = "Spells")

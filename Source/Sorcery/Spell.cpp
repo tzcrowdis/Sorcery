@@ -15,6 +15,8 @@ ASpell::ASpell()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Damage = BaseDamage;
+	AttackSpeed = BaseAttackSpeed;
 }
 
 // Called when the game starts or when spawned
@@ -79,4 +81,14 @@ UClass* ASpell::GetDamageType()
 void ASpell::ChangeElementalType(EElementalType NewType)
 {
 	Element = NewType;
+}
+
+void ASpell::UpdateDamage(float PercentOfBase)
+{
+	Damage = BaseDamage * PercentOfBase;
+}
+
+void ASpell::UpdateAttackSpeed(float PercentOfBase)
+{
+	AttackSpeed = BaseAttackSpeed * PercentOfBase;
 }

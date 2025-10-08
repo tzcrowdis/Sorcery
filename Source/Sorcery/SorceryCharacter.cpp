@@ -11,6 +11,8 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 
+#include "SorceryPlayerController.h"
+
 #include "Engine/SkeletalMeshSocket.h"
 #include "Sorcery.h"
 #include "Components/SphereComponent.h"
@@ -71,11 +73,20 @@ ASorceryCharacter::ASorceryCharacter()
 	ElementSelectCollider->SetupAttachment(GetMesh1P());
 	ElementSelectCollider->InitSphereRadius(1.f);
 
+	ActiveElementScale = 1.25f;
+
+	// skills / stats
+	MaxHealth = 100.f;
+	Health = MaxHealth;
+	DamagePercent = 1.f;
+	AttackSpeedPercent = 1.f;
+
 	// dash variables
 	DashVelocity = 500.f;
 	DashMaxCount = 1;
 	DashCount = 0;
 	bDashCooldownActive = false;
+	bDashResetTimerActive = false;
 
 	// origin point for spells
 	SpellAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("SpellAttachPoint"));
@@ -93,7 +104,7 @@ void ASorceryCharacter::BeginPlay()
 
 	// element wheel selection of element
 	DefaultElementScale = SMFireElement->GetRelativeScale3D();
-	SelectedElementScale = 1.1f * DefaultElementScale;
+	SelectedElementScale = ActiveElementScale * DefaultElementScale;
 
 	ActiveElement = EElementalType::Fire;
 	UpdateActiveElementalType();
@@ -139,6 +150,9 @@ void ASorceryCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		// Equip spells
 		EnhancedInputComponent->BindAction(EquipElementalBall, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::ElementalBall);
 		EnhancedInputComponent->BindAction(EquipLaser, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Laser);
+	
+		// Open Skills Menu
+		EnhancedInputComponent->BindAction(SkillsMenuAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ToggleSkillsMenu);
 	}
 	else
 	{
@@ -178,27 +192,40 @@ void ASorceryCharacter::Dash()
 	if (bDashCooldownActive)
 		return;
 
+	// cooldown if you've reached the max consecutive dashes
 	if (DashCount == DashMaxCount)
 	{
+		GetWorldTimerManager().ClearTimer(DashResetTimer);
+		bDashResetTimerActive = false;
+
 		GetWorldTimerManager().SetTimer(DashCooldownTimer, this, &ASorceryCharacter::ClearDashCooldown, DashCooldownTime);
 		bDashCooldownActive = true;
 		print("dash cooldown active");
 		return;
 	}
 
-	// NOTE i wanted to dash in camera direction but struggled with vertical friction, might be better without due to backwards dash
-	//FVector DashVector = FirstPersonCameraComponent->GetForwardVector(); 
-
-	// only dash forward
-	//FVector DashVector = GetActorForwardVector();
-
 	// dash horizontally according to movement input
 	FVector DashVector = GetPendingMovementInputVector();
 	DashVector.Z = 0.f;
 	DashVector.Normalize();
-	
 	LaunchCharacter(DashVector * DashVelocity, false, false);
 	DashCount++;
+
+	// soft timer to reset dash count when player doesnt hit max dash count
+	if (DashCount > 0 && DashCount < DashMaxCount)
+	{
+		if (bDashResetTimerActive)
+			GetWorldTimerManager().ClearTimer(DashResetTimer);
+
+		GetWorldTimerManager().SetTimer(DashResetTimer, this, &ASorceryCharacter::ResetDashCount, DashResetTime);
+	}
+}
+
+void ASorceryCharacter::ResetDashCount()
+{
+	GetWorldTimerManager().ClearTimer(DashResetTimer);
+	bDashResetTimerActive = false;
+	DashCount = 0;
 }
 
 void ASorceryCharacter::ClearDashCooldown()
@@ -207,6 +234,29 @@ void ASorceryCharacter::ClearDashCooldown()
 	DashCount = 0;
 	bDashCooldownActive = false;
 	print("dash cooldown cleared");
+}
+
+void ASorceryCharacter::ToggleSkillsMenu()
+{
+	// TODO consider getting player controller reference from the start
+	AController* controller = GetController();
+	ASorceryPlayerController* SorceryController = Cast<ASorceryPlayerController>(controller);
+	SorceryController->ToggleSkillsMenu();
+}
+
+float ASorceryCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (Health - DamageAmount <= 0.f)
+	{
+		Health = 0.f;
+		// TODO die
+	}
+	else
+	{
+		Health -= DamageAmount;
+	}
+
+	return DamageAmount;
 }
 
 /*
@@ -237,6 +287,8 @@ void ASorceryCharacter::EquipSpell(ESpellEquipped NewSpell)
 			ElementalBallSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 			ElementalBallSpell->ChangeElementalType(ActiveElement);
 			ElementalBallSpell->UpdateReticle();
+			ElementalBallSpell->UpdateDamage(DamagePercent);
+			ElementalBallSpell->UpdateAttackSpeed(AttackSpeedPercent);
 			break;
 
 		case ESpellEquipped::Laser:
@@ -244,6 +296,8 @@ void ASorceryCharacter::EquipSpell(ESpellEquipped NewSpell)
 			LaserSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 			LaserSpell->ChangeElementalType(ActiveElement);
 			LaserSpell->UpdateReticle();
+			LaserSpell->UpdateDamage(DamagePercent);
+			LaserSpell->UpdateAttackSpeed(AttackSpeedPercent);
 			break;
 	}
 }

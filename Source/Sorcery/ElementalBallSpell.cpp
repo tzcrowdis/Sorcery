@@ -11,6 +11,8 @@ AElementalBallSpell::AElementalBallSpell()
 {
 	MuzzleFlashComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MuzzleFlashEffect"));
 	RootComponent = MuzzleFlashComp;
+
+	bShootCooldownActive = false;
 }
 
 void AElementalBallSpell::BeginPlay()
@@ -49,6 +51,14 @@ void AElementalBallSpell::ShootElementalBall(ASorceryCharacter* Sorcerer)
 	if (Sorcerer->GetController() == nullptr)
 		return;
 
+	if (bShootCooldownActive)
+		return;
+	else
+	{
+		GetWorldTimerManager().SetTimer(ShootCooldownTimer, this, &AElementalBallSpell::ClearShootCooldown, AttackSpeed);
+		bShootCooldownActive = true;
+	}
+
 	// Try and fire a projectile
 	if (ProjectileClass != nullptr)
 	{
@@ -72,7 +82,12 @@ void AElementalBallSpell::ShootElementalBall(ASorceryCharacter* Sorcerer)
 
 			// Spawn the projectile at the muzzle
 			ASorceryProjectile* ball = World->SpawnActor<ASorceryProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-			if (ball) ball->ChangeElementalType(Element);
+			if (ball)
+			{
+				ball->ChangeElementalType(Element);
+				ball->UpdateDamage(Damage / BaseDamage); // HACK didnt want to write a SetDamage function
+			}
+				
 
 			// muzzle flash
 			if (MuzzleFlashComp)
@@ -93,4 +108,10 @@ void AElementalBallSpell::ShootElementalBall(ASorceryCharacter* Sorcerer)
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
 	}
 	*/
+}
+
+void AElementalBallSpell::ClearShootCooldown()
+{
+	GetWorldTimerManager().ClearTimer(ShootCooldownTimer);
+	bShootCooldownActive = false;
 }

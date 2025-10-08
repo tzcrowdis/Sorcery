@@ -33,6 +33,11 @@ protected:
 	// player camera for trace
 	class UCameraComponent* Camera;
 
+	bool bShootCooldownActive;
+	//float ShootCooldownTime;
+	FTimerHandle ShootCooldownTimer;
+	void ClearShootCooldown();
+
 public:
 	AElementalBallSpell();
 

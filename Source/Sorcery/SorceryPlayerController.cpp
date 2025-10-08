@@ -13,6 +13,6 @@ void ASorceryPlayerController::BeginPlay()
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		// add the mapping context so we get controls
-		Subsystem->AddMappingContext(InputMappingContext, 0);
+		Subsystem->AddMappingContext(GameInputMappingContext, 0);
 	}
 }

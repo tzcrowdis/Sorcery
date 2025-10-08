@@ -29,16 +29,25 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Element Color")
 	FLinearColor AcidColor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
+	EElementalType Element;
+
 	// Reticle
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Reticle")
 	UImage* ReticleTexture;
 
-
+	// modifiable stats shared between all spells
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
-	EElementalType Element;
+	float BaseDamage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	float Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
+	float BaseAttackSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
+	float AttackSpeed;
 
 public:	
 	// Sets default values for this actor's properties
@@ -62,4 +71,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Reticle")
 	void UpdateReticle();
+
+	UFUNCTION(BlueprintCallable, Category = "Modifiable")
+	void UpdateDamage(float PercentOfBase);
+
+	UFUNCTION(BlueprintCallable, Category = "Modifiable")
+	void UpdateAttackSpeed(float PercentOfBase);
 };
