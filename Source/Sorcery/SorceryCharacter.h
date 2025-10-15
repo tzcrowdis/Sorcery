@@ -110,7 +110,21 @@ protected:
 	/* Equipped Spell */
 	ESpellEquipped ActiveSpell;
 
+	/* Souls and Leveling */
+	//float LevelCap;
+
 public:
+	/* Souls and Leveling */
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Progression")
+	//int Level;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progression")
+	int SoulsUpgradeCost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Progression")
+	int SoulsHeld;
+
+	// health
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Health")
 	float Health;
 	
@@ -248,5 +262,15 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Element Wheel")
 	void UpdateActiveElementalType();
+
+	/* Souls and Leveling */
+	UFUNCTION(BlueprintCallable, Category = "Progression")
+	void GatherSouls(int Amount);
+
+	UFUNCTION(BlueprintCallable, Category = "Progression")
+	bool SpendSoulsForUpgrade();
+
+	UFUNCTION(BlueprintCallable, Category = "Progression")
+	bool CheckSoulsForUpgrade();
 };
 

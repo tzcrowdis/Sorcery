@@ -91,6 +91,10 @@ ASorceryCharacter::ASorceryCharacter()
 	// origin point for spells
 	SpellAttachPoint = CreateDefaultSubobject<USceneComponent>(TEXT("SpellAttachPoint"));
 	SpellAttachPoint->SetupAttachment(GetMesh1P());
+
+	// souls
+	SoulsHeld = 0;
+	SoulsUpgradeCost = 500;
 }
 
 void ASorceryCharacter::BeginPlay()
@@ -256,6 +260,10 @@ void ASorceryCharacter::ToggleSkillsMenu()
 	}
 }
 
+/*
+	HEALTH & PROGRESSION
+*/
+
 float ASorceryCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	if (Health - DamageAmount <= 0.f)
@@ -269,6 +277,32 @@ float ASorceryCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	}
 
 	return DamageAmount;
+}
+
+void ASorceryCharacter::GatherSouls(int Amount)
+{
+	SoulsHeld += Amount;
+}
+
+bool ASorceryCharacter::SpendSoulsForUpgrade()
+{
+	if (SoulsHeld - SoulsUpgradeCost < 0)
+		return false;
+	else
+	{
+		SoulsHeld -= SoulsUpgradeCost;
+		return true;
+	}
+
+	// rest of functionality handled in blueprints
+}
+
+bool ASorceryCharacter::CheckSoulsForUpgrade()
+{
+	if (SoulsHeld - SoulsUpgradeCost < 0)
+		return false;
+	else
+		return true;
 }
 
 /*
@@ -498,3 +532,4 @@ void ASorceryCharacter::UpdateActiveElementalType()
 			break;
 	}
 }
+

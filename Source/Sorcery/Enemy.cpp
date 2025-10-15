@@ -38,6 +38,8 @@ AEnemy::AEnemy()
 	ElementalWeaknessMesh->SetupAttachment(WeakSpotComp); // TEMP
 
 	DamageResistancePercent = 0.8f;
+
+	SoulsValue = 100;
 }
 
 // Called when the game starts or when spawned
@@ -180,6 +182,11 @@ float AEnemy::GetDamageResistance(UDamageType* DamageType) // returns inverse of
 
 void AEnemy::Die(AActor* DeathCauser)
 {
+	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(Player);
+	if (Sorcerer)
+		Sorcerer->GatherSouls(SoulsValue);
+	
 	// TODO reactions..?
 	Destroy();
 }

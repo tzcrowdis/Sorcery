@@ -76,6 +76,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DamageText")
 	FVector ImpactPoint;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Reward")
+	int SoulsValue;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
