@@ -236,6 +236,9 @@ public:
 		AActor* DamageCauser
 	) override;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Combat")
+	void UpdateHealthBar();
+
 	/** Functions to handle shooting spells */
 	UFUNCTION(BlueprintCallable, Category = "Spells")
 	void ShootSpell();

@@ -12,10 +12,13 @@ class SORCERY_API AEnemy : public ACharacter
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* HealthBar;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
 	float Health;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
 	float MaxHealth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
@@ -45,7 +48,7 @@ public:
 	AEnemy();
 
 	/* AI */
-	class AEnemyController* EnemyController;
+	class AEnemyController* EnemyController; // NOTE unique to variant???
 	
 	UPROPERTY(EditAnywhere, Category = "Behavior")
 	class UBehaviorTree* BehaviorTree;
@@ -53,10 +56,10 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Behavior")
 	class USphereComponent* AttackSphere;
 
-	UPROPERTY(BlueprintReadOnly)
-	bool bIsChasing;
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	bool bInAttackRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	bool bAttacking;
 
 	/* Weak Spot */
@@ -89,20 +92,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	UFUNCTION(BlueprintCallable)
 	void RandomizeElementalWeakness();
 
-	UFUNCTION()
-	void AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION() // NOTE should be overriden
+	virtual void AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION()
-	void AttackSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	UFUNCTION(BlueprintCallable)
-	void IsChasing(bool bChasing);
+	UFUNCTION() // NOTE should be overriden
+	virtual void AttackSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	virtual float TakeDamage
@@ -115,7 +112,7 @@ public:
 
 	virtual void Die(AActor* DeathCauser);
 
-	/* Floating Damage Functions */
+	// Called to update damage text
 	UFUNCTION(BlueprintImplementableEvent, Category = "DamageText")
 	void DrawFloatingDamageText();
 };

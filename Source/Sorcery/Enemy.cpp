@@ -4,6 +4,7 @@
 #include "Enemy.h"
 #include "Sorcery.h"
 #include "Components/SphereComponent.h"
+#include "Components/WidgetComponent.h"
 
 #include "EnemyController.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -23,19 +24,21 @@ AEnemy::AEnemy()
 	PrimaryActorTick.bCanEverTick = true;
 
 	EnemyController = Cast<AEnemyController>(GetController());
-	bIsChasing = true;
 	bInAttackRange = false;
 	bAttacking = false;
 
 	AttackSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AttackSphere"));
-	AttackSphere->SetupAttachment(GetRootComponent());
+	AttackSphere->SetupAttachment(RootComponent);
 	
 	WeakSpotComp = CreateDefaultSubobject<USphereComponent>(TEXT("WeakSpot"));
 	WeakSpotComp->SetupAttachment(RootComponent);
 	WeakSpotMultiplier = 1.5f;
 
 	ElementalWeaknessMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ElementalWeaknessMesh"));
-	ElementalWeaknessMesh->SetupAttachment(WeakSpotComp); // TEMP
+	ElementalWeaknessMesh->SetupAttachment(WeakSpotComp);
+
+	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	HealthBar->SetupAttachment(RootComponent);
 
 	DamageResistancePercent = 0.8f;
 
@@ -49,26 +52,20 @@ void AEnemy::BeginPlay()
 
 	if (EnemyController == nullptr)
 		EnemyController = Cast<AEnemyController>(GetController());
-
-	ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	if (Sorcerer)
-		EnemyController->GetBlackboard()->SetValueAsObject(TEXT("TargetActor"), Sorcerer);
 	
 	AttackSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::AttackSphereBeginOverlap);
 	AttackSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::AttackSphereEndOverlap);
+
+	// NOTE unique to variant
+	ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Sorcerer)
+		EnemyController->GetBlackboard()->SetValueAsObject(TEXT("TargetActor"), Sorcerer);
 }
 
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 
@@ -133,19 +130,12 @@ void AEnemy::AttackSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AA
 	}
 }
 
-void AEnemy::IsChasing(bool bChasing)
-{
-	bIsChasing = bChasing;
-}
-
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	UDamageType* DamageType = Cast<UDamageType>(DamageEvent.DamageTypeClass->GetDefaultObject());
 	float Resistance = GetDamageResistance(DamageType);
 	
 	DamageTaken = DamageAmount * Resistance;
-	DrawFloatingDamageText();
-
 	Health -= DamageTaken; 
 	if (Health <= 0.f)
 	{
@@ -153,7 +143,9 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 		Die(DamageCauser);
 	}
 
-	return DamageAmount * Resistance;
+	DrawFloatingDamageText();
+
+	return DamageTaken;
 }
 
 float AEnemy::GetDamageResistance(UDamageType* DamageType) // returns inverse of resistance?

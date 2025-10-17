@@ -276,6 +276,8 @@ float ASorceryCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 		Health -= DamageAmount;
 	}
 
+	UpdateHealthBar();
+
 	return DamageAmount;
 }
 
@@ -293,8 +295,6 @@ bool ASorceryCharacter::SpendSoulsForUpgrade()
 		SoulsHeld -= SoulsUpgradeCost;
 		return true;
 	}
-
-	// rest of functionality handled in blueprints
 }
 
 bool ASorceryCharacter::CheckSoulsForUpgrade()
