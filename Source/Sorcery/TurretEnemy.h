@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Enemy.h"
+//#include "TurretProjectile.h"
 #include "TurretEnemy.generated.h"
 
 /**
@@ -14,20 +15,43 @@ class SORCERY_API ATurretEnemy : public AEnemy
 {
 	GENERATED_BODY()
 
-	// TODO sit still
-	// TODO homing particle
+	USceneComponent* AttackTarget;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
+	bool bShootCooldownActive;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
+	float VolleyIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
+	float VolleyCount;
+	
+	FTimerHandle ShootCooldownTimer;
+	
+	UPROPERTY(EditAnywhere, Category = Projectile)
+	float ShootCooldownTime;
+	
 public:
-	//UPROPERTY(EditDefaultsOnly, Category = Projectile)
-	//TSubclassOf<class ASorceryProjectile> ProjectileClass;
+	UPROPERTY(EditAnywhere, Category = Projectile)
+	USceneComponent* ProjectileSpawnPoint;
+	
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class ATurretProjectile> ProjectileClass;
 
 public:
 	ATurretEnemy();
+
+	UFUNCTION(BlueprintCallable)
+	void SpawnHomingProjectile();
+
+	UFUNCTION(BlueprintCallable)
+	void StartShootCooldown();
+
+	UFUNCTION(BlueprintCallable)
+	void ClearShootCooldown();
 	
 	virtual void AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 	virtual void AttackSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
-
-	// TODO homing particle spawning
-	UFUNCTION(BlueprintImplementableEvent)
-	void SpawnHomingParticles();
 };

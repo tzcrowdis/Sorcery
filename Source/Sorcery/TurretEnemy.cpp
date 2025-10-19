@@ -2,13 +2,54 @@
 
 
 #include "TurretEnemy.h"
-
+#include "TurretProjectile.h"
 #include "EnemyController.h"
 #include "SorceryCharacter.h"
 
 ATurretEnemy::ATurretEnemy()
 {
+	bShootCooldownActive = false;
+	ShootCooldownTime = 2.5f;
 
+	VolleyIndex = 1;
+	VolleyCount = 3;
+
+	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPoint"));
+	ProjectileSpawnPoint->SetupAttachment(RootComponent);
+}
+
+void ATurretEnemy::SpawnHomingProjectile()
+{
+	if (ProjectileClass != nullptr)
+	{
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			const FVector SpawnLocation = ProjectileSpawnPoint->GetComponentLocation();
+			const FRotator SpawnRotation = ProjectileSpawnPoint->GetUpVector().Rotation();
+
+			//Set Spawn Collision Handling Override
+			FActorSpawnParameters ActorSpawnParams;
+			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+			
+			ATurretProjectile* Projectile = World->SpawnActor<ATurretProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			Projectile->SetProjectileHomingTarget(AttackTarget);
+			Projectile->SetOwner(this);
+		}
+	}
+}
+
+void ATurretEnemy::StartShootCooldown()
+{
+	GetWorldTimerManager().SetTimer(ShootCooldownTimer, this, &ATurretEnemy::ClearShootCooldown, ShootCooldownTime);
+	bShootCooldownActive = true;
+}
+
+void ATurretEnemy::ClearShootCooldown()
+{
+	GetWorldTimerManager().ClearTimer(ShootCooldownTimer);
+	bShootCooldownActive = false;
+	VolleyIndex = 1;
 }
 
 void ATurretEnemy::AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -20,6 +61,8 @@ void ATurretEnemy::AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedCompo
 		{
 			bInAttackRange = true;
 			bAttacking = true;
+
+			AttackTarget = Sorcerer->GetRootComponent();
 		}
 	}
 }
@@ -33,6 +76,8 @@ void ATurretEnemy::AttackSphereEndOverlap(UPrimitiveComponent* OverlappedCompone
 		{
 			bInAttackRange = false;
 			bAttacking = false;
+
+			AttackTarget = nullptr;
 		}
 	}
 }
