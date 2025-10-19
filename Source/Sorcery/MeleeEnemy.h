@@ -20,6 +20,10 @@ class SORCERY_API AMeleeEnemy : public AEnemy
 public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsChasing;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 	
 public:
 	AMeleeEnemy();

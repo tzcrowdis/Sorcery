@@ -55,11 +55,6 @@ void AEnemy::BeginPlay()
 	
 	AttackSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::AttackSphereBeginOverlap);
 	AttackSphere->OnComponentEndOverlap.AddDynamic(this, &AEnemy::AttackSphereEndOverlap);
-
-	// NOTE unique to variant
-	ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	if (Sorcerer)
-		EnemyController->GetBlackboard()->SetValueAsObject(TEXT("TargetActor"), Sorcerer);
 }
 
 // Called every frame

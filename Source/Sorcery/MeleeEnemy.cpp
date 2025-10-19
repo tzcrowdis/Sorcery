@@ -14,6 +14,15 @@ AMeleeEnemy::AMeleeEnemy()
 	bIsChasing = true;
 }
 
+void AMeleeEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Sorcerer)
+		EnemyController->GetBlackboard()->SetValueAsObject(TEXT("TargetActor"), Sorcerer);
+}
+
 void AMeleeEnemy::IsChasing(bool bChasing)
 {
 	bIsChasing = bChasing;

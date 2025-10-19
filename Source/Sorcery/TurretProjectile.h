@@ -32,10 +32,6 @@ class SORCERY_API ATurretProjectile : public AActor
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 
-	/* Trail Effect */
-	UPROPERTY(EditAnywhere, Category = "SFX")
-	UNiagaraSystem* TrailEffect;
-
 	/* Blow Up Effect */
 	UPROPERTY(EditAnywhere, Category = "SFX")
 	UNiagaraSystem* ExplodeEffect;

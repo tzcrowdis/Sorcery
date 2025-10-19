@@ -34,7 +34,7 @@ void ATurretEnemy::SpawnHomingProjectile()
 			
 			ATurretProjectile* Projectile = World->SpawnActor<ATurretProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 			Projectile->SetProjectileHomingTarget(AttackTarget);
-			Projectile->SetOwner(this);
+			Projectile->SetEnemyOwner(this);
 		}
 	}
 }

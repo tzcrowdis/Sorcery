@@ -60,10 +60,9 @@ void ATurretProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 	if ((OtherActor != nullptr) && (OtherActor != this))
 	{
 		ASorceryCharacter* Player = Cast<ASorceryCharacter>(OtherActor);
-		if (Player)
+		if (Player && Owner != nullptr)
 		{
-			if (Owner != nullptr)
-				UGameplayStatics::ApplyDamage(Player, Damage, Owner->GetController(), this, UDamageType::StaticClass());
+			UGameplayStatics::ApplyDamage(Player, Damage, Owner->GetController(), this, UDamageType::StaticClass());
 		}
 	}
 
