@@ -57,6 +57,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable)
 	UClass* GetDamageType();
 
 	FHitResult GetAimHitResult(UCameraComponent* PlayerCamera, float MaxAimDistance);

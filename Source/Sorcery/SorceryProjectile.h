@@ -46,16 +46,30 @@ class ASorceryProjectile : public ASpell
 	UPROPERTY(EditAnywhere, Category = "Hit Effect")
 	UNiagaraSystem* SpellHitEffect;
 
+	UPROPERTY(EditAnywhere, Category = "Hit Effect")
+	FVector HitEffectScale;
+
+protected:
+	/* Trail Effect */
+	UPROPERTY(EditAnywhere, Category = "Trail Effect")
+	UNiagaraSystem* SpellTrailEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Trail Effect")
+	FVector TrailEffectScale;
+
 	/* Blow Up Effect */
 	UPROPERTY(EditAnywhere, Category = "Death Effect")
 	UNiagaraSystem* SpellDeathEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Death Effect")
+	FVector DeathEffectScale;
 
 public:
 	ASorceryProjectile();
 
 	/** called when projectile hits something */
 	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	/** Returns CollisionComp subobject **/
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
@@ -64,6 +78,8 @@ public:
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
 
 protected:
+	virtual void BeginPlay() override;
+
 	void SpawnHitEffect(FVector Normal);
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

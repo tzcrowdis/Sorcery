@@ -45,6 +45,49 @@ ASorceryProjectile::ASorceryProjectile()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
+
+	// scale of particle effects
+	HitEffectScale = FVector(0.5f, 0.5f, 0.5f);
+	DeathEffectScale = FVector(0.5f, 0.5f, 0.5f);
+	TrailEffectScale = FVector(0.5f, 0.5f, 0.5f);
+}
+
+void ASorceryProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	// spawn trail effect
+	if (SpellTrailEffect != nullptr)
+	{
+		UNiagaraComponent* TrailEffect = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			SpellTrailEffect,
+			RootComponent,
+			NAME_None,
+			FVector::ZeroVector,
+			FRotator::ZeroRotator,
+			EAttachLocation::KeepRelativeOffset,
+			false,
+			true,
+			ENCPoolMethod::None,
+			true
+		);
+
+		switch (Element)
+		{
+		case EElementalType::Fire:
+			TrailEffect->SetColorParameter(FName("TrailColor"), FireColor);
+			break;
+		case EElementalType::Ice:
+			TrailEffect->SetColorParameter(FName("TrailColor"), IceColor);
+			break;
+		case EElementalType::Shock:
+			TrailEffect->SetColorParameter(FName("TrailColor"), ShockColor);
+			break;
+		case EElementalType::Acid:
+			TrailEffect->SetColorParameter(FName("TrailColor"), AcidColor);
+			break;
+		}
+	}
 }
 
 void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -121,7 +164,7 @@ void ASorceryProjectile::SpawnHitEffect(FVector Normal)
 		SpellHitEffect,
 		GetActorLocation(),
 		UKismetMathLibrary::Conv_VectorToRotator(Normal),
-		FVector(0.5f, 0.5f, 0.5f)
+		HitEffectScale
 	);
 	
 	switch (Element)
@@ -151,7 +194,7 @@ void ASorceryProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		SpellDeathEffect,
 		GetActorLocation(),
 		FRotator(0, 0, 0),
-		FVector(0.5f, 0.5f, 0.5f)
+		DeathEffectScale
 	);
 
 	switch (Element)

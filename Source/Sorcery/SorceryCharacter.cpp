@@ -22,6 +22,7 @@
 
 #include "ElementalBallSpell.h"
 #include "LaserSpell.h"
+#include "LobSpell.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -94,7 +95,7 @@ ASorceryCharacter::ASorceryCharacter()
 
 	// souls
 	SoulsHeld = 0;
-	SoulsUpgradeCost = 500;
+	SoulsUpgradeCost = 5;
 }
 
 void ASorceryCharacter::BeginPlay()
@@ -154,6 +155,7 @@ void ASorceryCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		// Equip spells
 		EnhancedInputComponent->BindAction(EquipElementalBall, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::ElementalBall);
 		EnhancedInputComponent->BindAction(EquipLaser, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Laser);
+		EnhancedInputComponent->BindAction(EquipLob, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Lob);
 	
 		// Open Skills Menu
 		EnhancedInputComponent->BindAction(SkillsMenuAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ToggleSkillsMenu);
@@ -257,6 +259,11 @@ void ASorceryCharacter::ToggleSkillsMenu()
 			LaserSpell->UpdateDamage(DamagePercent);
 			LaserSpell->UpdateAttackSpeed(AttackSpeedPercent);
 			break;
+
+		case ESpellEquipped::Lob:
+			LobSpell->UpdateDamage(DamagePercent);
+			LobSpell->UpdateAttackSpeed(AttackSpeedPercent);
+			break;
 	}
 }
 
@@ -320,6 +327,10 @@ void ASorceryCharacter::EquipSpell(ESpellEquipped NewSpell)
 		case ESpellEquipped::Laser:
 			if (LaserSpell) LaserSpell->Destroy();
 			break;
+
+		case ESpellEquipped::Lob:
+			if (LobSpell) LobSpell->Destroy();
+			break;
 	}
 	
 	// update active spell
@@ -345,6 +356,15 @@ void ASorceryCharacter::EquipSpell(ESpellEquipped NewSpell)
 			LaserSpell->UpdateDamage(DamagePercent);
 			LaserSpell->UpdateAttackSpeed(AttackSpeedPercent);
 			break;
+
+		case ESpellEquipped::Lob:
+			LobSpell = GetWorld()->SpawnActor<ALobSpell>(LobSpellClass);
+			LobSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			LobSpell->ChangeElementalType(ActiveElement);
+			LobSpell->UpdateReticle();
+			LobSpell->UpdateDamage(DamagePercent);
+			LobSpell->UpdateAttackSpeed(AttackSpeedPercent);
+			break;
 	}
 }
 
@@ -358,6 +378,10 @@ void ASorceryCharacter::ShootSpell()
 
 		case ESpellEquipped::Laser:
 			LaserSpell->ShootLaser(FirstPersonCameraComponent);
+			break;
+
+		case ESpellEquipped::Lob:
+			LobSpell->ShootLobSpell(this);
 			break;
 	}
 
@@ -379,6 +403,10 @@ void ASorceryCharacter::ReleaseSpell()
 
 		case ESpellEquipped::Laser:
 			LaserSpell->DeactivateLaser();
+			break;
+
+		case ESpellEquipped::Lob:
+			// no action necessary
 			break;
 	}
 }
@@ -529,6 +557,10 @@ void ASorceryCharacter::UpdateActiveElementalType()
 
 		case ESpellEquipped::Laser:
 			if (LaserSpell) LaserSpell->ChangeElementalType(ActiveElement);
+			break;
+
+		case ESpellEquipped::Lob:
+			if (LobSpell) LobSpell->ChangeElementalType(ActiveElement);
 			break;
 	}
 }

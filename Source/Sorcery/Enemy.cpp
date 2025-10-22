@@ -42,7 +42,7 @@ AEnemy::AEnemy()
 
 	DamageResistancePercent = 0.8f;
 
-	SoulsValue = 100;
+	SoulsValue = 1;
 }
 
 // Called when the game starts or when spawned

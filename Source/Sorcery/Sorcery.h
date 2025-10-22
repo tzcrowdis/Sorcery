@@ -34,5 +34,6 @@ UENUM(BlueprintType)
 enum class ESpellEquipped : uint8
 {
     ElementalBall UMETA(DisplayName = "Elemental Ball Spell"),
-    Laser UMETA(DisplayName = "Laser Spell")
+    Laser UMETA(DisplayName = "Laser Spell"),
+    Lob UMETA(DisplayName = "Lob Spell")
 };

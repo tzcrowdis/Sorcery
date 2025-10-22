@@ -67,6 +67,9 @@ class ASorceryCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* EquipLaser;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* EquipLob;
+
 	/** Rotate Element Wheel Left Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ElementWheelLeft;
@@ -85,6 +88,7 @@ class ASorceryCharacter : public ACharacter
 	/* Spell Actors */
 	class AElementalBallSpell* ElementalBallSpell;
 	class ALaserSpell* LaserSpell;
+	class ALobSpell* LobSpell;
 
 protected:
 	/* Dash */
@@ -164,6 +168,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spells")
 	TSubclassOf<class ALaserSpell> LaserSpellClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spells")
+	TSubclassOf<class ALobSpell> LobSpellClass;
 
 	/* Element Wheel */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
