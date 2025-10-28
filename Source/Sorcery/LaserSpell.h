@@ -45,7 +45,7 @@ public:
 	ALaserSpell();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Spells")
-	bool LaserFiring;
+	bool bLaserFiring;
 
 	UFUNCTION(BlueprintCallable, Category = "Spells")
 	void ShootLaser(UCameraComponent* PlayerCamera);

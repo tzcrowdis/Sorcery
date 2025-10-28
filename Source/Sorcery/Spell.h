@@ -32,26 +32,24 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	EElementalType Element;
 
-	// Reticle
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Reticle")
-	UImage* ReticleTexture;
-
 	// modifiable stats shared between all spells
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	float BaseDamage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	float Damage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	float BaseAttackSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	float AttackSpeed;
 
 public:	
 	// Sets default values for this actor's properties
 	ASpell();
+
+	virtual void EquipSpell(EElementalType ElementType, float DamagePercent, float AttackSpeedPercent);
 
 protected:
 	// Called when the game starts or when spawned

@@ -66,18 +66,18 @@ void ALobSpellProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	
 	switch (Element)
 	{
-	case EElementalType::Fire:
-		DeathEffect->SetColorParameter(FName("OrbColor"), FireColor);
-		break;
-	case EElementalType::Ice:
-		DeathEffect->SetColorParameter(FName("OrbColor"), IceColor);
-		break;
-	case EElementalType::Shock:
-		DeathEffect->SetColorParameter(FName("OrbColor"), ShockColor);
-		break;
-	case EElementalType::Acid:
-		DeathEffect->SetColorParameter(FName("OrbColor"), AcidColor);
-		break;
+		case EElementalType::Fire:
+			DeathEffect->SetColorParameter(FName("DeathColor"), FireColor);
+			break;
+		case EElementalType::Ice:
+			DeathEffect->SetColorParameter(FName("DeathColor"), IceColor);
+			break;
+		case EElementalType::Shock:
+			DeathEffect->SetColorParameter(FName("DeathColor"), ShockColor);
+			break;
+		case EElementalType::Acid:
+			DeathEffect->SetColorParameter(FName("DeathColor"), AcidColor);
+			break;
 	}
 
 	TArray<AActor*> ActorsToIgnore = { UGameplayStatics::GetPlayerCharacter(GetWorld(), 0) };

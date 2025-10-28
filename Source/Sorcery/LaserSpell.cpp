@@ -86,7 +86,7 @@ void ALaserSpell::ShootLaser(UCameraComponent* PlayerCamera)
 
 			// enable the laser effect
 			LaserComp->Activate();
-			LaserFiring = true;
+			bLaserFiring = true;
 
 			// set beam end point
 			LaserComp->SetVectorParameter(FName("BeamEnd"), LaserEndPoint);
@@ -165,5 +165,5 @@ void ALaserSpell::DeactivateLaser()
 {
 	// disable the laser component
 	LaserComp->Deactivate();
-	LaserFiring = false;
+	bLaserFiring = false;
 }

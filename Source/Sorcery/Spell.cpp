@@ -15,8 +15,6 @@ ASpell::ASpell()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Damage = BaseDamage;
-	AttackSpeed = BaseAttackSpeed;
 }
 
 // Called when the game starts or when spawned
@@ -24,6 +22,8 @@ void ASpell::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	Damage = BaseDamage;
+	AttackSpeed = BaseAttackSpeed;
 }
 
 // Called every frame
@@ -31,6 +31,14 @@ void ASpell::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ASpell::EquipSpell(EElementalType ElementType, float DamagePercent, float AttackSpeedPercent)
+{
+	ChangeElementalType(ElementType);
+	UpdateDamage(DamagePercent);
+	UpdateAttackSpeed(AttackSpeedPercent);
+	UpdateReticle();
 }
 
 FHitResult ASpell::GetAimHitResult(UCameraComponent* PlayerCamera, float MaxAimDistance)

@@ -23,6 +23,8 @@
 #include "ElementalBallSpell.h"
 #include "LaserSpell.h"
 #include "LobSpell.h"
+#include "ElementThrowerSpell.h"
+#include "TracerSpell.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -156,6 +158,8 @@ void ASorceryCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(EquipElementalBall, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::ElementalBall);
 		EnhancedInputComponent->BindAction(EquipLaser, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Laser);
 		EnhancedInputComponent->BindAction(EquipLob, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Lob);
+		EnhancedInputComponent->BindAction(EquipThrower, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Thrower);
+		EnhancedInputComponent->BindAction(EquipTracer, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Tracer);
 	
 		// Open Skills Menu
 		EnhancedInputComponent->BindAction(SkillsMenuAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ToggleSkillsMenu);
@@ -264,6 +268,16 @@ void ASorceryCharacter::ToggleSkillsMenu()
 			LobSpell->UpdateDamage(DamagePercent);
 			LobSpell->UpdateAttackSpeed(AttackSpeedPercent);
 			break;
+		
+		case ESpellEquipped::Thrower:
+			ThrowerSpell->UpdateDamage(DamagePercent);
+			ThrowerSpell->UpdateAttackSpeed(AttackSpeedPercent);
+			break;
+		
+		case ESpellEquipped::Tracer:
+			TracerSpell->UpdateDamage(DamagePercent);
+			TracerSpell->UpdateAttackSpeed(AttackSpeedPercent);
+			break;
 	}
 }
 
@@ -331,6 +345,14 @@ void ASorceryCharacter::EquipSpell(ESpellEquipped NewSpell)
 		case ESpellEquipped::Lob:
 			if (LobSpell) LobSpell->Destroy();
 			break;
+		
+		case ESpellEquipped::Thrower:
+			if (ThrowerSpell) ThrowerSpell->Destroy();
+			break;
+		
+		case ESpellEquipped::Tracer:
+			if (TracerSpell) TracerSpell->Destroy();
+			break;
 	}
 	
 	// update active spell
@@ -342,28 +364,32 @@ void ASorceryCharacter::EquipSpell(ESpellEquipped NewSpell)
 		case ESpellEquipped::ElementalBall:
 			ElementalBallSpell = GetWorld()->SpawnActor<AElementalBallSpell>(ElementalBallSpellClass);
 			ElementalBallSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-			ElementalBallSpell->ChangeElementalType(ActiveElement);
-			ElementalBallSpell->UpdateReticle();
-			ElementalBallSpell->UpdateDamage(DamagePercent);
-			ElementalBallSpell->UpdateAttackSpeed(AttackSpeedPercent);
+			ElementalBallSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent);
 			break;
 
 		case ESpellEquipped::Laser:
 			LaserSpell = GetWorld()->SpawnActor<ALaserSpell>(LaserSpellClass);
 			LaserSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-			LaserSpell->ChangeElementalType(ActiveElement);
-			LaserSpell->UpdateReticle();
-			LaserSpell->UpdateDamage(DamagePercent);
-			LaserSpell->UpdateAttackSpeed(AttackSpeedPercent);
+			LaserSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent);
 			break;
 
 		case ESpellEquipped::Lob:
 			LobSpell = GetWorld()->SpawnActor<ALobSpell>(LobSpellClass);
 			LobSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-			LobSpell->ChangeElementalType(ActiveElement);
-			LobSpell->UpdateReticle();
-			LobSpell->UpdateDamage(DamagePercent);
-			LobSpell->UpdateAttackSpeed(AttackSpeedPercent);
+			LobSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent);
+			break;
+		
+		case ESpellEquipped::Thrower:
+			ThrowerSpell = GetWorld()->SpawnActor<AElementThrowerSpell>(ThrowerSpellClass);
+			ThrowerSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			ThrowerSpell->SetActorRotation(ThrowerSpell->GetSpellOrientation(FirstPersonCameraComponent));
+			ThrowerSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent);
+			break;
+		
+		case ESpellEquipped::Tracer:
+			TracerSpell = GetWorld()->SpawnActor<ATracerSpell>(TracerSpellClass);
+			TracerSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+			TracerSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent);
 			break;
 	}
 }
@@ -382,6 +408,14 @@ void ASorceryCharacter::ShootSpell()
 
 		case ESpellEquipped::Lob:
 			LobSpell->ShootLobSpell(this);
+			break;
+		
+		case ESpellEquipped::Thrower:
+			ThrowerSpell->ShootThrowerSpell(this);
+			break;
+		
+		case ESpellEquipped::Tracer:
+			TracerSpell->ShootTracerSpell(this);
 			break;
 	}
 
@@ -407,6 +441,14 @@ void ASorceryCharacter::ReleaseSpell()
 
 		case ESpellEquipped::Lob:
 			// no action necessary
+			break;
+
+		case ESpellEquipped::Thrower:
+			ThrowerSpell->DeactivateThrowerSpell();
+			break;
+
+		case ESpellEquipped::Tracer:
+			TracerSpell->DeactivateTracerSpell();
 			break;
 	}
 }
@@ -561,6 +603,14 @@ void ASorceryCharacter::UpdateActiveElementalType()
 
 		case ESpellEquipped::Lob:
 			if (LobSpell) LobSpell->ChangeElementalType(ActiveElement);
+			break;
+		
+		case ESpellEquipped::Thrower:
+			if (ThrowerSpell) ThrowerSpell->ChangeElementalType(ActiveElement);
+			break;
+		
+		case ESpellEquipped::Tracer:
+			if (TracerSpell) TracerSpell->ChangeElementalType(ActiveElement);
 			break;
 	}
 }

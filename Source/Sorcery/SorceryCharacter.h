@@ -70,6 +70,12 @@ class ASorceryCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* EquipLob;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* EquipThrower;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* EquipTracer;
+
 	/** Rotate Element Wheel Left Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ElementWheelLeft;
@@ -89,6 +95,10 @@ class ASorceryCharacter : public ACharacter
 	class AElementalBallSpell* ElementalBallSpell;
 	class ALaserSpell* LaserSpell;
 	class ALobSpell* LobSpell;
+	class AElementThrowerSpell* ThrowerSpell;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Anims", meta = (AllowPrivateAccess = "true"))
+	class ATracerSpell* TracerSpell;
 
 protected:
 	/* Dash */
@@ -171,6 +181,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spells")
 	TSubclassOf<class ALobSpell> LobSpellClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spells")
+	TSubclassOf<class AElementThrowerSpell> ThrowerSpellClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spells")
+	TSubclassOf<class ATracerSpell> TracerSpellClass;
 
 	/* Element Wheel */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")

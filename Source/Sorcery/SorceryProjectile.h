@@ -25,10 +25,6 @@ class ASorceryProjectile : public ASpell
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	UStaticMeshComponent* SphereMesh;
 
-	/** Projectile movement component */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
-	UProjectileMovementComponent* ProjectileMovement;
-
 	/* Projectile Elemental Type */
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	UMaterialInterface* M_Fire;
@@ -50,6 +46,10 @@ class ASorceryProjectile : public ASpell
 	FVector HitEffectScale;
 
 protected:
+	/** Projectile movement component */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
+	UProjectileMovementComponent* ProjectileMovement;
+
 	/* Trail Effect */
 	UPROPERTY(EditAnywhere, Category = "Trail Effect")
 	UNiagaraSystem* SpellTrailEffect;
