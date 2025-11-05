@@ -108,6 +108,9 @@ protected:
 	FTimerHandle DashResetTimer;
 	bool bDashResetTimerActive;
 
+	/* Health */
+	FTimerHandle HealthRegenTimer;
+
 	/* Element Wheel Rotation Vars */
 	TQueue<int32> EWRotationQueue;
 	int32 EWCurrentRotation;
@@ -141,11 +144,17 @@ public:
 	// health
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Health")
 	float Health;
-	
-	/* Modifiable Skills/Stats */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float HealthRegenQuantity;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float HealthRegenTime;
+	
+	/* Modifiable Skills/Stats */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Skills")
 	float DamagePercent;
 
@@ -230,6 +239,9 @@ protected:
 	void ClearDashCooldown();
 	void ResetDashCount();
 
+	/* Health Regen */
+	void RegenHealth();
+
 	/* Element Wheel Input Queue Functions */
 	void QueueElementWheelLeft();
 	void QueueElementWheelRight();
@@ -260,7 +272,7 @@ public:
 	) override;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Combat")
-	void UpdateHealthBar();
+	void UpdateHealthBar(bool Damaged);
 
 	/** Functions to handle shooting spells */
 	UFUNCTION(BlueprintCallable, Category = "Spells")

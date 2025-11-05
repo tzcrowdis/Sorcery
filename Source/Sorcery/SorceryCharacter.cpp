@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 #include "SorceryPlayerController.h"
 
@@ -78,9 +79,13 @@ ASorceryCharacter::ASorceryCharacter()
 
 	ActiveElementScale = 1.25f;
 
-	// skills / stats
+	// health
 	MaxHealth = 100.f;
 	Health = MaxHealth;
+	HealthRegenTime = 1.f;
+	HealthRegenQuantity = 1.f;
+
+	// skills / stats
 	DamagePercent = 1.f;
 	AttackSpeedPercent = 1.f;
 
@@ -118,6 +123,9 @@ void ASorceryCharacter::BeginPlay()
 
 	ActiveSpell = ESpellEquipped::ElementalBall; // NOTE default should be elemental ball
 	EquipSpell(ActiveSpell);
+
+	// start health regen loop
+	GetWorldTimerManager().SetTimer(HealthRegenTimer, this, &ASorceryCharacter::RegenHealth, HealthRegenTime);
 }
 
 void ASorceryCharacter::Tick(float DeltaTime)
@@ -285,19 +293,32 @@ void ASorceryCharacter::ToggleSkillsMenu()
 	HEALTH & PROGRESSION
 */
 
+void ASorceryCharacter::RegenHealth()
+{
+	GetWorldTimerManager().ClearTimer(HealthRegenTimer);
+
+	Health += HealthRegenQuantity;
+	if (Health >= MaxHealth)
+		Health = MaxHealth;
+	UpdateHealthBar(false);
+
+	GetWorldTimerManager().SetTimer(HealthRegenTimer, this, &ASorceryCharacter::RegenHealth, HealthRegenTime);
+}
+
 float ASorceryCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	if (Health - DamageAmount <= 0.f)
 	{
 		Health = 0.f;
 		// TODO die
+		UKismetSystemLibrary::QuitGame(GetWorld(), nullptr, EQuitPreference::Quit, false);
 	}
 	else
 	{
 		Health -= DamageAmount;
 	}
 
-	UpdateHealthBar();
+	UpdateHealthBar(true);
 
 	return DamageAmount;
 }
