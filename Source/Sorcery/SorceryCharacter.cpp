@@ -541,8 +541,6 @@ void ASorceryCharacter::UpdateElementWheelRotation(float NormalizedRotation)
 	Rotation.Pitch = FMath::Lerp(EWStartRotation.Pitch, EWStartRotation.Pitch + EWCurrentRotation, NormalizedRotation);
 	ElementWheel->AddLocalRotation(Rotation - EWPreviousRotation);
 	EWPreviousRotation = Rotation;
-
-	// TODO keep individual symbols vertical
 }
 
 void ASorceryCharacter::ElementSelectOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

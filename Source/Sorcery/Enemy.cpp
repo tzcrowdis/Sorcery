@@ -139,6 +139,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	}
 
 	DrawFloatingDamageText();
+	ApplyDamageFlash(DamageType);
 
 	return DamageTaken;
 }
@@ -165,6 +166,31 @@ float AEnemy::GetDamageResistance(UDamageType* DamageType) // returns inverse of
 	{
 		return 1.f;
 	}
+}
+
+UMaterialInterface* AEnemy::GetDamageFlashMaterial(UDamageType* ElementType, bool CriticalHit)
+{
+	if (CriticalHit)
+		return M_Critical;
+	
+	if (ElementType->IsA(UDT_Fire::StaticClass()))
+	{
+		return M_Fire;
+	}
+	else if (ElementType->IsA(UDT_Shock::StaticClass()))
+	{
+		return M_Shock;
+	}
+	else if (ElementType->IsA(UDT_Dark::StaticClass()))
+	{
+		return M_Dark;
+	}
+	else if (ElementType->IsA(UDT_Acid::StaticClass()))
+	{
+		return M_Acid;
+	}
+
+	return nullptr;
 }
 
 void AEnemy::Die(AActor* DeathCauser)

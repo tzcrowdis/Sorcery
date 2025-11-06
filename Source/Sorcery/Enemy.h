@@ -28,7 +28,7 @@ class SORCERY_API AEnemy : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elements", meta = (AllowPrivateAccess = "true"))
 	EElementalType ElementWeakness;
 
-	UPROPERTY(EditAnywhere, Category = "Elements")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elements", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* ElementalWeaknessMesh;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
@@ -42,6 +42,9 @@ class SORCERY_API AEnemy : public ACharacter
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	UMaterialInterface* M_Dark;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UMaterialInterface* M_Critical;
 
 public:
 	// Sets default values for this character's properties
@@ -115,4 +118,10 @@ public:
 	// Called to update damage text
 	UFUNCTION(BlueprintImplementableEvent, Category = "DamageText")
 	void DrawFloatingDamageText();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Combat")
+	void ApplyDamageFlash(const UDamageType* ElementType);
+
+	UFUNCTION(BlueprintCallable)
+	UMaterialInterface* GetDamageFlashMaterial(UDamageType* ElementType, bool CriticalHit);
 };
