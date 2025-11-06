@@ -22,14 +22,14 @@ void ALobSpell::ChangeElementalType(EElementalType NewType)
 		case EElementalType::Fire:
 			MuzzleFlashComp->SetColorParameter(FName("FlashColor"), FireColor);
 			break;
-		case EElementalType::Ice:
-			MuzzleFlashComp->SetColorParameter(FName("FlashColor"), IceColor);
-			break;
 		case EElementalType::Shock:
 			MuzzleFlashComp->SetColorParameter(FName("FlashColor"), ShockColor);
 			break;
 		case EElementalType::Acid:
 			MuzzleFlashComp->SetColorParameter(FName("FlashColor"), AcidColor);
+			break;
+		case EElementalType::Dark:
+			MuzzleFlashComp->SetColorParameter(FName("FlashColor"), DarkColor);
 			break;
 	}
 	MuzzleFlashComp->Deactivate();

@@ -41,10 +41,6 @@ void ALaserSpell::ChangeElementalType(EElementalType NewType)
 			LaserComp->SetColorParameter(FName("BeamColor"), FireColor);
 			LaserComp->SetVariableMaterial(FName("OriginMat"), M_Fire);
 			break;
-		case EElementalType::Ice:
-			LaserComp->SetColorParameter(FName("BeamColor"), IceColor);
-			LaserComp->SetVariableMaterial(FName("OriginMat"), M_Ice);
-			break;
 		case EElementalType::Shock:
 			LaserComp->SetColorParameter(FName("BeamColor"), ShockColor);
 			LaserComp->SetVariableMaterial(FName("OriginMat"), M_Shock);
@@ -52,6 +48,10 @@ void ALaserSpell::ChangeElementalType(EElementalType NewType)
 		case EElementalType::Acid:
 			LaserComp->SetColorParameter(FName("BeamColor"), AcidColor);
 			LaserComp->SetVariableMaterial(FName("OriginMat"), M_Acid);
+			break;
+		case EElementalType::Dark:
+			LaserComp->SetColorParameter(FName("BeamColor"), DarkColor);
+			LaserComp->SetVariableMaterial(FName("OriginMat"), M_Dark);
 			break;
 	}
 }

@@ -25,9 +25,9 @@ UENUM(BlueprintType)
 enum class EElementalType : uint8
 {
     Fire UMETA(DisplayName = "Fire"),
-    Ice UMETA(DisplayName = "Ice"),
     Shock UMETA(DisplayName = "Shock"),
-    Acid UMETA(DisplayName = "Acid")
+    Acid UMETA(DisplayName = "Acid"),
+    Dark UMETA(DisplayName = "Dark")
 };
 
 UENUM(BlueprintType)

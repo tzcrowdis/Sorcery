@@ -5,9 +5,9 @@
 #include "Camera/CameraComponent.h"
 
 #include "DT_Fire.h"
-#include "DT_Ice.h"
-#include "DT_Acid.h"
 #include "DT_Shock.h"
+#include "DT_Dark.h"
+#include "DT_Acid.h"
 
 // Sets default values
 ASpell::ASpell()
@@ -75,12 +75,12 @@ UClass* ASpell::GetDamageType()
 	{
 		case EElementalType::Fire:
 			return UDT_Fire::StaticClass();
-		case EElementalType::Ice:
-			return UDT_Ice::StaticClass();
 		case EElementalType::Shock:
 			return UDT_Shock::StaticClass();
 		case EElementalType::Acid:
 			return UDT_Acid::StaticClass();
+		case EElementalType::Dark:
+			return UDT_Dark::StaticClass();
 	}
 
 	return nullptr;

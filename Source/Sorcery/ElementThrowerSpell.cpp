@@ -46,14 +46,14 @@ void AElementThrowerSpell::ChangeElementalType(EElementalType NewType)
 		case EElementalType::Fire:
 			ElementThrowerComp->SetColorParameter(FName("ThrowerColor"), FireColor);
 			break;
-		case EElementalType::Ice:
-			ElementThrowerComp->SetColorParameter(FName("ThrowerColor"), IceColor);
-			break;
 		case EElementalType::Shock:
 			ElementThrowerComp->SetColorParameter(FName("ThrowerColor"), ShockColor);
 			break;
 		case EElementalType::Acid:
 			ElementThrowerComp->SetColorParameter(FName("ThrowerColor"), AcidColor);
+			break;
+		case EElementalType::Dark:
+			ElementThrowerComp->SetColorParameter(FName("ThrowerColor"), DarkColor);
 			break;
 	}
 }

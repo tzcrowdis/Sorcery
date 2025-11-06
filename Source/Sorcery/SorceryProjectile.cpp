@@ -8,9 +8,9 @@
 #include "Enemy.h"
 #include "Kismet/GameplayStatics.h"
 #include "DT_Fire.h"
-#include "DT_Ice.h"
-#include "DT_Acid.h"
 #include "DT_Shock.h"
+#include "DT_Dark.h"
+#include "DT_Acid.h"
 
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
@@ -77,14 +77,14 @@ void ASorceryProjectile::BeginPlay()
 		case EElementalType::Fire:
 			TrailEffect->SetColorParameter(FName("TrailColor"), FireColor);
 			break;
-		case EElementalType::Ice:
-			TrailEffect->SetColorParameter(FName("TrailColor"), IceColor);
-			break;
 		case EElementalType::Shock:
 			TrailEffect->SetColorParameter(FName("TrailColor"), ShockColor);
 			break;
 		case EElementalType::Acid:
 			TrailEffect->SetColorParameter(FName("TrailColor"), AcidColor);
+			break;
+		case EElementalType::Dark:
+			TrailEffect->SetColorParameter(FName("TrailColor"), DarkColor);
 			break;
 		}
 	}
@@ -142,14 +142,14 @@ void ASorceryProjectile::ChangeElementalType(EElementalType NewType)
 		case EElementalType::Fire:
 			SphereMesh->SetMaterial(0, M_Fire);
 			break;
-		case EElementalType::Ice:
-			SphereMesh->SetMaterial(0, M_Ice);
-			break;
 		case EElementalType::Shock:
 			SphereMesh->SetMaterial(0, M_Shock);
 			break;
 		case EElementalType::Acid:
 			SphereMesh->SetMaterial(0, M_Acid);
+			break;
+		case EElementalType::Dark:
+			SphereMesh->SetMaterial(0, M_Dark);
 			break;
 	}
 }
@@ -172,14 +172,14 @@ void ASorceryProjectile::SpawnHitEffect(FVector Normal)
 		case EElementalType::Fire:
 			HitEffect->SetColorParameter(FName("HitColor"), FireColor);
 			break;
-		case EElementalType::Ice:
-			HitEffect->SetColorParameter(FName("HitColor"), IceColor);
-			break;
 		case EElementalType::Shock:
 			HitEffect->SetColorParameter(FName("HitColor"), ShockColor);
 			break;
 		case EElementalType::Acid:
 			HitEffect->SetColorParameter(FName("HitColor"), AcidColor);
+			break;
+		case EElementalType::Dark:
+			HitEffect->SetColorParameter(FName("HitColor"), DarkColor);
 			break;
 	}
 }
@@ -202,14 +202,14 @@ void ASorceryProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		case EElementalType::Fire:
 			DeathEffect->SetColorParameter(FName("DeathColor"), FireColor);
 			break;
-		case EElementalType::Ice:
-			DeathEffect->SetColorParameter(FName("DeathColor"), IceColor);
-			break;
 		case EElementalType::Shock:
 			DeathEffect->SetColorParameter(FName("DeathColor"), ShockColor);
 			break;
 		case EElementalType::Acid:
 			DeathEffect->SetColorParameter(FName("DeathColor"), AcidColor);
+			break;
+		case EElementalType::Dark:
+			DeathEffect->SetColorParameter(FName("DeathColor"), DarkColor);
 			break;
 	}
 }

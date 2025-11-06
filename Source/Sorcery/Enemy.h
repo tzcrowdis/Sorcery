@@ -35,13 +35,13 @@ class SORCERY_API AEnemy : public ACharacter
 	UMaterialInterface* M_Fire;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
-	UMaterialInterface* M_Ice;
-
-	UPROPERTY(EditAnywhere, Category = "Elements")
 	UMaterialInterface* M_Shock;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	UMaterialInterface* M_Acid;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Dark;
 
 public:
 	// Sets default values for this character's properties

@@ -21,13 +21,13 @@ protected:
 	FLinearColor FireColor;
 
 	UPROPERTY(EditAnywhere, Category = "Element Color")
-	FLinearColor IceColor;
-
-	UPROPERTY(EditAnywhere, Category = "Element Color")
 	FLinearColor ShockColor;
 
 	UPROPERTY(EditAnywhere, Category = "Element Color")
 	FLinearColor AcidColor;
+
+	UPROPERTY(EditAnywhere, Category = "Element Color")
+	FLinearColor DarkColor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	EElementalType Element;

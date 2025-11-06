@@ -30,13 +30,13 @@ class ASorceryProjectile : public ASpell
 	UMaterialInterface* M_Fire;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
-	UMaterialInterface* M_Ice;
-
-	UPROPERTY(EditAnywhere, Category = "Elements")
 	UMaterialInterface* M_Shock;
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	UMaterialInterface* M_Acid;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Dark;
 
 	/* Hit Effect */
 	UPROPERTY(EditAnywhere, Category = "Hit Effect")

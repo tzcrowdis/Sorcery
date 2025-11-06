@@ -13,9 +13,9 @@
 
 #include "Engine/DamageEvents.h"
 #include "DT_Fire.h"
-#include "DT_Ice.h"
-#include "DT_Acid.h"
 #include "DT_Shock.h"
+#include "DT_Dark.h"
+#include "DT_Acid.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -74,10 +74,6 @@ void AEnemy::RandomizeElementalWeakness()
 			ElementWeakness = EElementalType::Fire;
 			ElementalWeaknessMesh->SetMaterial(0, M_Fire);
 			break;
-		case EElementalType::Ice:
-			ElementWeakness = EElementalType::Ice;
-			ElementalWeaknessMesh->SetMaterial(0, M_Ice);
-			break;
 		case EElementalType::Shock:
 			ElementWeakness = EElementalType::Shock;
 			ElementalWeaknessMesh->SetMaterial(0, M_Shock);
@@ -85,6 +81,10 @@ void AEnemy::RandomizeElementalWeakness()
 		case EElementalType::Acid:
 			ElementWeakness = EElementalType::Acid;
 			ElementalWeaknessMesh->SetMaterial(0, M_Acid);
+			break;
+		case EElementalType::Dark:
+			ElementWeakness = EElementalType::Dark;
+			ElementalWeaknessMesh->SetMaterial(0, M_Dark);
 			break;
 	}
 }
@@ -149,15 +149,15 @@ float AEnemy::GetDamageResistance(UDamageType* DamageType) // returns inverse of
 	{
 		return 1.f - DamageResistancePercent;
 	}
-	else if (DamageType->IsA(UDT_Ice::StaticClass()) && ElementWeakness != EElementalType::Ice)
+	else if (DamageType->IsA(UDT_Shock::StaticClass()) && ElementWeakness != EElementalType::Shock)
+	{
+		return 1.f - DamageResistancePercent;
+	}
+	else if (DamageType->IsA(UDT_Dark::StaticClass()) && ElementWeakness != EElementalType::Dark)
 	{
 		return 1.f - DamageResistancePercent;
 	}
 	else if (DamageType->IsA(UDT_Acid::StaticClass()) && ElementWeakness != EElementalType::Acid)
-	{
-		return 1.f - DamageResistancePercent;
-	}
-	else if (DamageType->IsA(UDT_Shock::StaticClass()) && ElementWeakness != EElementalType::Shock)
 	{
 		return 1.f - DamageResistancePercent;
 	}

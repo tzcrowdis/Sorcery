@@ -27,13 +27,13 @@ class SORCERY_API ALaserSpell : public ASpell
 	UMaterialInterface* M_Fire;
 
 	UPROPERTY(EditAnywhere, Category = "Origin Material")
-	UMaterialInterface* M_Ice;
-
-	UPROPERTY(EditAnywhere, Category = "Origin Material")
 	UMaterialInterface* M_Shock;
 
 	UPROPERTY(EditAnywhere, Category = "Origin Material")
 	UMaterialInterface* M_Acid;
+
+	UPROPERTY(EditAnywhere, Category = "Origin Material")
+	UMaterialInterface* M_Dark;
 
 protected:
 	virtual void BeginPlay() override;

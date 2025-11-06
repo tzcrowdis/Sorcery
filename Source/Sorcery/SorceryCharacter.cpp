@@ -58,14 +58,14 @@ ASorceryCharacter::ASorceryCharacter()
 	SMFireElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FireElement"));
 	SMFireElement->SetupAttachment(ElementWheel);
 
+	SMAcidElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AcidElement"));
+	SMAcidElement->SetupAttachment(ElementWheel);
+
 	SMShockElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShockElement"));
 	SMShockElement->SetupAttachment(ElementWheel);
 
-	SMIceElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("IceElement"));
-	SMIceElement->SetupAttachment(ElementWheel);
-
-	SMAcidElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("AcidElement"));
-	SMAcidElement->SetupAttachment(ElementWheel);
+	SMDarkElement = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DarkElement"));
+	SMDarkElement->SetupAttachment(ElementWheel);
 
 	// element wheel rotation values
 	EWLeftRotationValue = -90;
@@ -541,6 +541,8 @@ void ASorceryCharacter::UpdateElementWheelRotation(float NormalizedRotation)
 	Rotation.Pitch = FMath::Lerp(EWStartRotation.Pitch, EWStartRotation.Pitch + EWCurrentRotation, NormalizedRotation);
 	ElementWheel->AddLocalRotation(Rotation - EWPreviousRotation);
 	EWPreviousRotation = Rotation;
+
+	// TODO keep individual symbols vertical
 }
 
 void ASorceryCharacter::ElementSelectOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -557,25 +559,25 @@ void ASorceryCharacter::ElementSelectOverlapBegin(UPrimitiveComponent* Overlappe
 	if (StaticMesh == SMFireElement->GetStaticMesh())
 	{
 		ActiveElement = EElementalType::Fire;
-		SMFireElement->SetRelativeScale3D(SelectedElementScale);
-		UpdateActiveElementalType();
-	}
-	else if (StaticMesh == SMIceElement->GetStaticMesh())
-	{
-		ActiveElement = EElementalType::Ice;
-		SMIceElement->SetRelativeScale3D(SelectedElementScale);
+		GrowElementSymbol(SMFireElement);
 		UpdateActiveElementalType();
 	}
 	else if (StaticMesh == SMShockElement->GetStaticMesh())
 	{
 		ActiveElement = EElementalType::Shock;
-		SMShockElement->SetRelativeScale3D(SelectedElementScale);
+		GrowElementSymbol(SMShockElement);
 		UpdateActiveElementalType();
 	}
 	else if (StaticMesh == SMAcidElement->GetStaticMesh())
 	{
 		ActiveElement = EElementalType::Acid;
-		SMAcidElement->SetRelativeScale3D(SelectedElementScale);
+		GrowElementSymbol(SMAcidElement);
+		UpdateActiveElementalType();
+	}
+	else if (StaticMesh == SMDarkElement->GetStaticMesh())
+	{
+		ActiveElement = EElementalType::Dark;
+		GrowElementSymbol(SMDarkElement);
 		UpdateActiveElementalType();
 	}
 }
@@ -593,19 +595,19 @@ void ASorceryCharacter::ElementSelectOverlapEnd(UPrimitiveComponent* OverlappedC
 	UStaticMesh* StaticMesh = StaticMeshComp->GetStaticMesh();
 	if (StaticMesh == SMFireElement->GetStaticMesh())
 	{
-		SMFireElement->SetRelativeScale3D(DefaultElementScale);
-	}
-	else if (StaticMesh == SMIceElement->GetStaticMesh())
-	{
-		SMIceElement->SetRelativeScale3D(DefaultElementScale);
+		ShrinkElementSymbol(SMFireElement);
 	}
 	else if (StaticMesh == SMShockElement->GetStaticMesh())
 	{
-		SMShockElement->SetRelativeScale3D(DefaultElementScale);
+		ShrinkElementSymbol(SMShockElement);
 	}
 	else if (StaticMesh == SMAcidElement->GetStaticMesh())
 	{
-		SMAcidElement->SetRelativeScale3D(DefaultElementScale);
+		ShrinkElementSymbol(SMAcidElement);
+	}
+	else if (StaticMesh == SMDarkElement->GetStaticMesh())
+	{
+		ShrinkElementSymbol(SMDarkElement);
 	}
 }
 

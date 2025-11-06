@@ -205,13 +205,13 @@ public:
 	UStaticMeshComponent* SMFireElement;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
+	UStaticMeshComponent* SMAcidElement;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
 	UStaticMeshComponent* SMShockElement;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
-	UStaticMeshComponent* SMIceElement;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
-	UStaticMeshComponent* SMAcidElement;
+	UStaticMeshComponent* SMDarkElement;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
 	USphereComponent* ElementSelectCollider;
@@ -297,6 +297,12 @@ public:
 
 	UFUNCTION()
 	void ElementSelectOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Element Wheel")
+	void GrowElementSymbol(UStaticMeshComponent* SelectedElementMesh);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Element Wheel")
+	void ShrinkElementSymbol(UStaticMeshComponent* DeselectedElementMesh);
 
 	UFUNCTION(BlueprintCallable, Category = "Element Wheel")
 	void UpdateActiveElementalType();
