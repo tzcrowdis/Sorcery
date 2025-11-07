@@ -17,6 +17,9 @@
 #include "DT_Dark.h"
 #include "DT_Acid.h"
 
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+
 // Sets default values
 AEnemy::AEnemy()
 {
@@ -64,7 +67,7 @@ void AEnemy::Tick(float DeltaTime)
 
 }
 
-// Called after spawning in the spawner blueprint
+// Called in blueprint begin play
 void AEnemy::RandomizeElementalWeakness()
 {
 	int32 randomElement = FMath::RandRange(0, 3);
@@ -135,7 +138,7 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	if (Health <= 0.f)
 	{
 		Health = 0.f;
-		Die(DamageCauser);
+		Die(DamageCauser, DamageType);
 	}
 
 	DrawFloatingDamageText();
@@ -193,13 +196,29 @@ UMaterialInterface* AEnemy::GetDamageFlashMaterial(UDamageType* ElementType, boo
 	return nullptr;
 }
 
-void AEnemy::Die(AActor* DeathCauser)
+void AEnemy::Die(AActor* DeathCauser, UDamageType* DamageType)
 {
 	ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(Player);
 	if (Sorcerer)
 		Sorcerer->GatherSouls(SoulsValue);
 	
-	// TODO reactions..?
+	UNiagaraComponent* DeathEffectComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		GetWorld(),
+		DeathEffect,
+		GetActorLocation() + FVector(0.f, 0.f, 50.f),
+		FRotator(0, FMath::FRandRange(0.f, 360.f), 0),
+		FVector(1.f, 1.f, 1.f)
+	);
+
+	if (DamageType->IsA(UDT_Fire::StaticClass()))
+		DeathEffectComp->SetColorParameter(FName("SparksColor"), FireColor);
+	else if (DamageType->IsA(UDT_Shock::StaticClass()))
+		DeathEffectComp->SetColorParameter(FName("SparksColor"), ShockColor);
+	else if (DamageType->IsA(UDT_Dark::StaticClass()))
+		DeathEffectComp->SetColorParameter(FName("SparksColor"), DarkColor);
+	else if (DamageType->IsA(UDT_Acid::StaticClass()))
+		DeathEffectComp->SetColorParameter(FName("SparksColor"), AcidColor);
+	
 	Destroy();
 }

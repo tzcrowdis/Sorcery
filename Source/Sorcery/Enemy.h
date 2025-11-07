@@ -7,6 +7,8 @@
 #include "GameFramework/Character.h"
 #include "Enemy.generated.h"
 
+class UNiagaraSystem;
+
 UCLASS()
 class SORCERY_API AEnemy : public ACharacter
 {
@@ -45,6 +47,22 @@ class SORCERY_API AEnemy : public ACharacter
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	UMaterialInterface* M_Critical;
+
+	/* Death */
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UNiagaraSystem* DeathEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Element Color")
+	FLinearColor FireColor;
+
+	UPROPERTY(EditAnywhere, Category = "Element Color")
+	FLinearColor ShockColor;
+
+	UPROPERTY(EditAnywhere, Category = "Element Color")
+	FLinearColor AcidColor;
+
+	UPROPERTY(EditAnywhere, Category = "Element Color")
+	FLinearColor DarkColor;
 
 public:
 	// Sets default values for this character's properties
@@ -113,7 +131,7 @@ public:
 		AActor* DamageCauser
 	) override;
 
-	virtual void Die(AActor* DeathCauser);
+	virtual void Die(AActor* DeathCauser, UDamageType* DamageType);
 
 	// Called to update damage text
 	UFUNCTION(BlueprintImplementableEvent, Category = "DamageText")
