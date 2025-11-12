@@ -50,8 +50,12 @@ void AChainLightning::ApplyChainLightning(AActor* AttachedEnemy, UClass* DamageT
 			});
 	}
 
+	int Splits = ChainQuantityBreadth;
+	if (DamageableActors.Num() < ChainQuantityBreadth)
+		Splits = DamageableActors.Num();
+
 	// apply the lightning effect and damage
-	for (int i = 0; i < ChainQuantityBreadth; i++)
+	for (int i = 0; i < Splits; i++)
 	{
 		SpawnLightningEffect(DamageableActors[i]->GetActorLocation(), ElementColor);
 		ApplyLightningDamage(DamageableActors[i], DamageType);
@@ -73,7 +77,7 @@ void AChainLightning::SpawnLightningEffect(FVector TargetPosition, FLinearColor 
 		LightningParticleSystem,
 		GetRootComponent(),
 		NAME_None,
-		FVector::ZeroVector,
+		FVector(0.f, 0.f, 50.f),
 		FRotator::ZeroRotator,
 		EAttachLocation::KeepRelativeOffset,
 		true,
@@ -81,7 +85,7 @@ void AChainLightning::SpawnLightningEffect(FVector TargetPosition, FLinearColor 
 		ENCPoolMethod::None,
 		true
 	);
-	LightningEffect->SetVectorParameter(FName("TargetPosition"), TargetPosition);
+	LightningEffect->SetVectorParameter(FName("TargetPosition"), TargetPosition + FVector(0.f, 0.f, 50.f));
 	LightningEffect->SetColorParameter(FName("LightningColor"), ElementColor);
 
 	print("spawn executed");
