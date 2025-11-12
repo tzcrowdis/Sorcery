@@ -27,6 +27,8 @@
 #include "ElementThrowerSpell.h"
 #include "TracerSpell.h"
 
+#include "ChainLightning.h"
+
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
@@ -103,6 +105,12 @@ ASorceryCharacter::ASorceryCharacter()
 	// souls
 	SoulsHeld = 0;
 	SoulsUpgradeCost = 5;
+
+	// chain lightning
+	bChainLightningUnlocked = false;
+	ChainLightningDamage = 5.f;
+	ChainLightningBreadth = 1;
+	ChainLightningDepth = 1;
 }
 
 void ASorceryCharacter::BeginPlay()
@@ -636,3 +644,19 @@ void ASorceryCharacter::UpdateActiveElementalType()
 	}
 }
 
+/*
+	MODIFIERS
+*/
+
+void ASorceryCharacter::ApplyAllModifiers(AActor* TargetActor, UClass* DamageType, FLinearColor ElementColor)
+{
+	if (bChainLightningUnlocked)
+	{
+		AChainLightning* ChainLightningMod = GetWorld()->SpawnActor<AChainLightning>(ChainLightningClass);
+		ChainLightningMod->AttachToActor(TargetActor, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+		ChainLightningMod->SetChainLightningParams(ChainLightningBreadth, ChainLightningDepth, ChainLightningDamage);
+		ChainLightningMod->ApplyChainLightning(TargetActor, DamageType, ElementColor);
+	}
+
+	// etc.
+}

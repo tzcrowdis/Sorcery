@@ -3,6 +3,8 @@
 
 #include "Spell.h"
 #include "Camera/CameraComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "SorceryCharacter.h"
 
 #include "DT_Fire.h"
 #include "DT_Shock.h"
@@ -68,7 +70,6 @@ FVector ASpell::GetAimLocation(UCameraComponent* PlayerCamera, float MaxAimDista
 	return AimPoint;
 }
 
-
 UClass* ASpell::GetDamageType()
 {
 	switch (Element)
@@ -99,4 +100,29 @@ void ASpell::UpdateDamage(float PercentOfBase)
 void ASpell::UpdateAttackSpeed(float PercentOfBase)
 {
 	AttackSpeed = BaseAttackSpeed * PercentOfBase;
+}
+
+void ASpell::ApplyModifiers(AActor* TargetActor)
+{
+	// NOTE assumes only one player
+	ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	FLinearColor Color = FireColor;
+	switch (Element)
+	{
+		case EElementalType::Fire:
+			Color = FireColor;
+			break;
+		case EElementalType::Shock:
+			Color = ShockColor;
+			break;
+		case EElementalType::Acid:
+			Color = AcidColor;
+			break;
+		case EElementalType::Dark:
+			Color = DarkColor;
+			break;
+	}
+
+	Sorcerer->ApplyAllModifiers(TargetActor, GetDamageType(), Color);
 }

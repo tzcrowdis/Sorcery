@@ -176,7 +176,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float DashResetTime;
-
 	
 	/** Spell Classes and Variables */
 	UPROPERTY(EditAnywhere, Category = "Spells")
@@ -196,6 +195,22 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spells")
 	TSubclassOf<class ATracerSpell> TracerSpellClass;
+
+	/* Modifiers Status */
+	UPROPERTY(EditDefaultsOnly, Category = "Modifiers")
+	TSubclassOf<class AChainLightning> ChainLightningClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Modifiers")
+	bool bChainLightningUnlocked;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Modifiers")
+	float ChainLightningDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Modifiers")
+	int32 ChainLightningBreadth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Modifiers")
+	int32 ChainLightningDepth;
 
 	/* Element Wheel */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Element Wheel")
@@ -316,5 +331,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Progression")
 	bool CheckSoulsForUpgrade();
+
+	/* Modifiers */
+	UFUNCTION(BlueprintCallable, Category = "Modifiers")
+	void ApplyAllModifiers(AActor* TargetActor, UClass* DamageType, FLinearColor ElementColor);
 };
 

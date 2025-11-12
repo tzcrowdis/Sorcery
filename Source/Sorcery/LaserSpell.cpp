@@ -152,6 +152,8 @@ void ALaserSpell::ApplyLaserDamage()
 			Enemy->bWeakSpotHit = false;
 			UGameplayStatics::ApplyDamage(Enemy, Damage, PlayerController, this, GetDamageType());
 		}
+
+		ApplyModifiers(Enemy);
 	}
 
 	// Only add impulse if we hit a physics object

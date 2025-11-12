@@ -62,6 +62,8 @@ protected:
 
 	FVector GetAimLocation(UCameraComponent* PlayerCamera, float MaxAimDistance);
 
+	void ApplyModifiers(AActor* TargetActor);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

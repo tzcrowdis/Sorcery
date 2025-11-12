@@ -44,6 +44,8 @@ void ALobSpellProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor
 				Enemy->bWeakSpotHit = false;
 				UGameplayStatics::ApplyDamage(Enemy, Damage, PlayerController, this, GetDamageType());
 			}
+
+			ApplyModifiers(Enemy);
 		}
 	}
 

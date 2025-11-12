@@ -38,6 +38,8 @@ void ATracerSpellProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 				Enemy->bWeakSpotHit = false;
 				UGameplayStatics::ApplyDamage(Enemy, Damage, PlayerController, this, GetDamageType());
 			}
+
+			ApplyModifiers(Enemy);
 		}
 	}
 

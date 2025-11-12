@@ -83,6 +83,8 @@ void AElementThrowerSpell::ApplyThrowerDamage()
 
 			Enemy->bWeakSpotHit = false;
 			UGameplayStatics::ApplyDamage(Enemy, Damage, PlayerController, this, GetDamageType());
+
+			ApplyModifiers(Enemy);
 		}
 	}
 	

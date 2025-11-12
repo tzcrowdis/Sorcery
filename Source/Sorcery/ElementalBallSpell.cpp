@@ -87,7 +87,6 @@ void AElementalBallSpell::ShootElementalBall(ASorceryCharacter* Sorcerer)
 				ball->ChangeElementalType(Element);
 				ball->UpdateDamage(Damage / BaseDamage); // HACK didnt want to write a SetDamage function
 			}
-				
 
 			// muzzle flash
 			if (MuzzleFlashComp)
