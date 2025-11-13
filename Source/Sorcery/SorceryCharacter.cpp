@@ -654,7 +654,7 @@ void ASorceryCharacter::ApplyAllModifiers(AActor* TargetActor, UClass* DamageTyp
 	{
 		AChainLightning* ChainLightningMod = GetWorld()->SpawnActor<AChainLightning>(ChainLightningClass);
 		ChainLightningMod->AttachToActor(TargetActor, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-		ChainLightningMod->SetChainLightningParams(ChainLightningBreadth, ChainLightningDepth, ChainLightningDamage);
+		ChainLightningMod->SetChainLightningParams(ChainLightningBreadth, ChainLightningDepth - 1, ChainLightningDamage);
 		ChainLightningMod->ApplyChainLightning(TargetActor, DamageType, ElementColor);
 	}
 

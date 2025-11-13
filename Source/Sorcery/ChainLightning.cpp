@@ -26,12 +26,14 @@ void AChainLightning::SetChainLightningParams(int32 ChainBreadth, int32 ChainDep
 	Damage = NewDamage;
 }
 
-void AChainLightning::ApplyChainLightning(AActor* AttachedEnemy, UClass* DamageType, FLinearColor ElementColor)
+void AChainLightning::ApplyChainLightning(AActor* AttachedEnemy, UClass* DamageType, FLinearColor ElementColor, AActor* PreviousEnemy)
 {
 	// get enemies in range and sort by distance, if necessary
 	TArray<AActor*> DamageableActors;
 	LightningRangeSphere->GetOverlappingActors(DamageableActors, AEnemy::StaticClass());
+
 	DamageableActors.Remove(AttachedEnemy);
+	if (PreviousEnemy != nullptr) DamageableActors.Remove(PreviousEnemy);
 
 	if (DamageableActors.Num() == 0)
 	{
@@ -61,11 +63,7 @@ void AChainLightning::ApplyChainLightning(AActor* AttachedEnemy, UClass* DamageT
 		ApplyLightningDamage(DamageableActors[i], DamageType);
 		
 		if (ChainQuantityDepth > 0)
-		{
-			AChainLightning* ChildLightning = GetWorld()->SpawnActor<AChainLightning>();
-			ChildLightning->AttachToActor(DamageableActors[i], FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-			ChildLightning->SetChainLightningParams(ChainQuantityBreadth, ChainQuantityDepth - 1, Damage);
-		}
+			SpawnChildLightning(DamageableActors[i], DamageType, ElementColor, AttachedEnemy);
 	}
 
 	DelayedDestroy();
@@ -87,8 +85,6 @@ void AChainLightning::SpawnLightningEffect(FVector TargetPosition, FLinearColor 
 	);
 	LightningEffect->SetVectorParameter(FName("TargetPosition"), TargetPosition + FVector(0.f, 0.f, 50.f));
 	LightningEffect->SetColorParameter(FName("LightningColor"), ElementColor);
-
-	print("spawn executed");
 }
 
 void AChainLightning::ApplyLightningDamage(AActor* TargetEnemy, UClass* DamageType)

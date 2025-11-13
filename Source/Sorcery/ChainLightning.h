@@ -47,8 +47,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetChainLightningParams(int32 ChainBreadth, int32 ChainDepth, float NewDamage);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void SpawnChildLightning(AActor* AttachToActor, UClass* DamageType, FLinearColor ElementColor, AActor* PreviousActor);
+
 	UFUNCTION(BlueprintCallable, Category = "Combat")
-	void ApplyChainLightning(AActor* AttachedEnemy, UClass* DamageType, FLinearColor ElementColor);
+	void ApplyChainLightning(AActor* AttachedEnemy, UClass* DamageType, FLinearColor ElementColor, AActor* PreviousEnemy = nullptr);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void DelayedDestroy();
