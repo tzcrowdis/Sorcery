@@ -37,6 +37,8 @@ public:
 
 	virtual void AttackSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
+	// TODO sword collider overlap functions (replace attack func)
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void Attack();
 

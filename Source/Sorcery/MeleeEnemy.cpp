@@ -41,7 +41,7 @@ void AMeleeEnemy::AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedCompon
 			EnemyController->GetBlackboard()->SetValueAsBool(TEXT("InAttackRange"), true);
 			EnemyController->GetBlackboard()->SetValueAsBool(TEXT("Attacking"), true);
 
-			Attack();
+			Attack(); // TODO replace with playing attack anim
 
 			bInAttackRange = true;
 			bAttacking = true;

@@ -34,7 +34,7 @@ AEnemy::AEnemy()
 	AttackSphere->SetupAttachment(RootComponent);
 	
 	WeakSpotComp = CreateDefaultSubobject<USphereComponent>(TEXT("WeakSpot"));
-	WeakSpotComp->SetupAttachment(RootComponent);
+	WeakSpotComp->SetupAttachment(GetMesh());
 	WeakSpotMultiplier = 1.5f;
 
 	ElementalWeaknessMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ElementalWeaknessMesh"));

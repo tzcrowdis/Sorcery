@@ -33,6 +33,14 @@ protected:
 	float ShootCooldownTime;
 	
 public:
+	// additional weak spots for this enemy
+	UPROPERTY(VisibleDefaultsOnly, Category = "Combat")
+	class USphereComponent* WeakSpotComp1;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Combat")
+	class USphereComponent* WeakSpotComp2;
+	
+	// projectiles
 	UPROPERTY(EditAnywhere, Category = Projectile)
 	USceneComponent* ProjectileSpawnPoint;
 	

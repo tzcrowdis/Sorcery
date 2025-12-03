@@ -5,6 +5,7 @@
 #include "TurretProjectile.h"
 #include "EnemyController.h"
 #include "SorceryCharacter.h"
+#include "Components/SphereComponent.h"
 
 ATurretEnemy::ATurretEnemy()
 {
@@ -16,6 +17,14 @@ ATurretEnemy::ATurretEnemy()
 
 	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPoint"));
 	ProjectileSpawnPoint->SetupAttachment(RootComponent);
+
+	WeakSpotComp->SetupAttachment(GetMesh(), FName(TEXT("T1_EndSocket")));
+
+	WeakSpotComp1 = CreateDefaultSubobject<USphereComponent>(TEXT("WeakSpot1"));
+	WeakSpotComp1->SetupAttachment(GetMesh(), FName(TEXT("T2_EndSocket")));
+
+	WeakSpotComp2 = CreateDefaultSubobject<USphereComponent>(TEXT("WeakSpot2"));
+	WeakSpotComp2->SetupAttachment(GetMesh(), FName(TEXT("T3_EndSocket")));
 }
 
 void ATurretEnemy::SpawnHomingProjectile()

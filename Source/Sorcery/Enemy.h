@@ -31,7 +31,7 @@ class SORCERY_API AEnemy : public ACharacter
 	EElementalType ElementWeakness;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elements", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* ElementalWeaknessMesh;
+	UStaticMeshComponent* ElementalWeaknessMesh; // TODO delete?
 
 	UPROPERTY(EditAnywhere, Category = "Elements")
 	UMaterialInterface* M_Fire;
@@ -69,7 +69,7 @@ public:
 	AEnemy();
 
 	/* AI */
-	class AEnemyController* EnemyController; // NOTE unique to variant???
+	class AEnemyController* EnemyController;
 	
 	UPROPERTY(EditAnywhere, Category = "Behavior")
 	class UBehaviorTree* BehaviorTree;
