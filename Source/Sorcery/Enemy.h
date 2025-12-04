@@ -26,25 +26,6 @@ class SORCERY_API AEnemy : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	float DamageResistancePercent;
 
-	/* Elemental Weakness */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elements", meta = (AllowPrivateAccess = "true"))
-	EElementalType ElementWeakness;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elements", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* ElementalWeaknessMesh; // TODO delete?
-
-	UPROPERTY(EditAnywhere, Category = "Elements")
-	UMaterialInterface* M_Fire;
-
-	UPROPERTY(EditAnywhere, Category = "Elements")
-	UMaterialInterface* M_Shock;
-
-	UPROPERTY(EditAnywhere, Category = "Elements")
-	UMaterialInterface* M_Acid;
-
-	UPROPERTY(EditAnywhere, Category = "Elements")
-	UMaterialInterface* M_Dark;
-
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	UMaterialInterface* M_Critical;
 
@@ -63,6 +44,23 @@ class SORCERY_API AEnemy : public ACharacter
 
 	UPROPERTY(EditAnywhere, Category = "Element Color")
 	FLinearColor DarkColor;
+
+protected:
+	/* Elemental Weakness */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elements", meta = (AllowPrivateAccess = "true"))
+	EElementalType ElementWeakness;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Fire;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Shock;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Acid;
+
+	UPROPERTY(EditAnywhere, Category = "Elements")
+	UMaterialInterface* M_Dark;
 
 public:
 	// Sets default values for this character's properties
@@ -114,7 +112,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void RandomizeElementalWeakness();
+	virtual void RandomizeElementalWeakness();
 
 	UFUNCTION() // NOTE should be overriden
 	virtual void AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

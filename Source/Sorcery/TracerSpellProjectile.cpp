@@ -23,23 +23,7 @@ void ATracerSpellProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherAc
 		AEnemy* Enemy = Cast<AEnemy>(OtherActor);
 		if (Enemy)
 		{
-			if (OtherComp == Enemy->AttackSphere)
-				return;
-
-			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0); // NOTE assumes single player
-
-			if (OtherComp == Enemy->WeakSpotComp)
-			{
-				Enemy->bWeakSpotHit = true;
-				UGameplayStatics::ApplyDamage(Enemy, Damage * Enemy->WeakSpotMultiplier, PlayerController, this, GetDamageType());
-			}
-			else
-			{
-				Enemy->bWeakSpotHit = false;
-				UGameplayStatics::ApplyDamage(Enemy, Damage, PlayerController, this, GetDamageType());
-			}
-
-			ApplyModifiers(Enemy);
+			ApplyDamageToEnemy(Enemy, OtherComp, Damage, this, GetDamageType());
 		}
 	}
 

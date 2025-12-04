@@ -50,6 +50,8 @@ public:
 public:
 	ATurretEnemy();
 
+	virtual void RandomizeElementalWeakness() override;
+
 	UFUNCTION(BlueprintCallable)
 	void SpawnHomingProjectile();
 

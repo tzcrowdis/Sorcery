@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Sorcery.h"
 #include "Components/Image.h"
+#include "Enemy.h"
 #include "Spell.generated.h"
 
 class UCameraComponent;
@@ -63,6 +64,8 @@ protected:
 	FVector GetAimLocation(UCameraComponent* PlayerCamera, float MaxAimDistance);
 
 	void ApplyModifiers(AActor* TargetActor);
+
+	void ApplyDamageToEnemy(AEnemy* Enemy, UPrimitiveComponent* EnemyComp, float HitDamage, AActor* DamageCauser, TSubclassOf<UDamageType> DamageTypeClass);
 
 public:	
 	// Called every frame

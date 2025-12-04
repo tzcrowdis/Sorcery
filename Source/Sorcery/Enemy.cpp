@@ -37,9 +37,6 @@ AEnemy::AEnemy()
 	WeakSpotComp->SetupAttachment(GetMesh());
 	WeakSpotMultiplier = 1.5f;
 
-	ElementalWeaknessMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ElementalWeaknessMesh"));
-	ElementalWeaknessMesh->SetupAttachment(WeakSpotComp);
-
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
 	HealthBar->SetupAttachment(RootComponent);
 
@@ -67,29 +64,9 @@ void AEnemy::Tick(float DeltaTime)
 
 }
 
-// Called in blueprint begin play
 void AEnemy::RandomizeElementalWeakness()
 {
-	int32 randomElement = FMath::RandRange(0, 3);
-	switch (static_cast<EElementalType>(randomElement))
-	{
-		case EElementalType::Fire:
-			ElementWeakness = EElementalType::Fire;
-			ElementalWeaknessMesh->SetMaterial(0, M_Fire);
-			break;
-		case EElementalType::Shock:
-			ElementWeakness = EElementalType::Shock;
-			ElementalWeaknessMesh->SetMaterial(0, M_Shock);
-			break;
-		case EElementalType::Acid:
-			ElementWeakness = EElementalType::Acid;
-			ElementalWeaknessMesh->SetMaterial(0, M_Acid);
-			break;
-		case EElementalType::Dark:
-			ElementWeakness = EElementalType::Dark;
-			ElementalWeaknessMesh->SetMaterial(0, M_Dark);
-			break;
-	}
+	// overwritten by child classes
 }
 
 void AEnemy::AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

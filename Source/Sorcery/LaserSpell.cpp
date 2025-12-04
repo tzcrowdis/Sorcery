@@ -140,20 +140,7 @@ void ALaserSpell::ApplyLaserDamage()
 	AEnemy* Enemy = Cast<AEnemy>(HitResult.GetActor());
 	if (Enemy)
 	{
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0); // NOTE assumes single player
-
-		if (HitResult.GetComponent() == Enemy->WeakSpotComp)
-		{
-			Enemy->bWeakSpotHit = true;
-			UGameplayStatics::ApplyDamage(Enemy, Damage * Enemy->WeakSpotMultiplier, PlayerController, this, GetDamageType());
-		}
-		else
-		{
-			Enemy->bWeakSpotHit = false;
-			UGameplayStatics::ApplyDamage(Enemy, Damage, PlayerController, this, GetDamageType());
-		}
-
-		ApplyModifiers(Enemy);
+		ApplyDamageToEnemy(Enemy, HitResult.GetComponent(), Damage, this, GetDamageType());
 	}
 
 	// Only add impulse if we hit a physics object

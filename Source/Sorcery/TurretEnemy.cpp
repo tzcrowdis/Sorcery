@@ -27,6 +27,30 @@ ATurretEnemy::ATurretEnemy()
 	WeakSpotComp2->SetupAttachment(GetMesh(), FName(TEXT("T3_EndSocket")));
 }
 
+void ATurretEnemy::RandomizeElementalWeakness()
+{
+	int32 randomElement = FMath::RandRange(0, 3);
+	switch (static_cast<EElementalType>(randomElement))
+	{
+	case EElementalType::Fire:
+		ElementWeakness = EElementalType::Fire;
+		GetMesh()->SetMaterial(1, M_Fire);
+		break;
+	case EElementalType::Shock:
+		ElementWeakness = EElementalType::Shock;
+		GetMesh()->SetMaterial(1, M_Shock);
+		break;
+	case EElementalType::Acid:
+		ElementWeakness = EElementalType::Acid;
+		GetMesh()->SetMaterial(1, M_Acid);
+		break;
+	case EElementalType::Dark:
+		ElementWeakness = EElementalType::Dark;
+		GetMesh()->SetMaterial(1, M_Dark);
+		break;
+	}
+}
+
 void ATurretEnemy::SpawnHomingProjectile()
 {
 	if (ProjectileClass != nullptr)

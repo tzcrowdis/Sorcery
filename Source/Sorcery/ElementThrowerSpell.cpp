@@ -79,12 +79,7 @@ void AElementThrowerSpell::ApplyThrowerDamage()
 		AEnemy* Enemy = Cast<AEnemy>(Actor);
 		if (Enemy)
 		{
-			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0); // NOTE assumes single player
-
-			Enemy->bWeakSpotHit = false;
-			UGameplayStatics::ApplyDamage(Enemy, Damage, PlayerController, this, GetDamageType());
-
-			ApplyModifiers(Enemy);
+			ApplyDamageToEnemy(Enemy, nullptr, Damage, this, GetDamageType());
 		}
 	}
 	

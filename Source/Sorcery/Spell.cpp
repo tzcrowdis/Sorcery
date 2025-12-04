@@ -5,6 +5,8 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "SorceryCharacter.h"
+#include "Enemy.h"
+#include "Components/SphereComponent.h"
 
 #include "DT_Fire.h"
 #include "DT_Shock.h"
@@ -125,4 +127,26 @@ void ASpell::ApplyModifiers(AActor* TargetActor)
 	}
 
 	Sorcerer->ApplyAllModifiers(TargetActor, GetDamageType(), Color);
+}
+
+void ASpell::ApplyDamageToEnemy(AEnemy* Enemy, UPrimitiveComponent* EnemyComp, float HitDamage, AActor* DamageCauser, TSubclassOf<UDamageType> DamageTypeClass)
+{
+	// NOTE i gotta be misunderstanding a collision setting but this should work
+	//if (EnemyComp == Enemy->AttackSphere)
+	//	return; 
+
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0); // NOTE assumes single player
+	
+	if (EnemyComp != nullptr && EnemyComp->ComponentHasTag("WeakSpot"))
+	{
+		Enemy->bWeakSpotHit = true;
+		UGameplayStatics::ApplyDamage(Enemy, HitDamage * Enemy->WeakSpotMultiplier, PlayerController, DamageCauser, DamageTypeClass);
+	}
+	else
+	{
+		Enemy->bWeakSpotHit = false;
+		UGameplayStatics::ApplyDamage(Enemy, HitDamage, PlayerController, DamageCauser, DamageTypeClass);
+	}
+
+	ApplyModifiers(Enemy);
 }
