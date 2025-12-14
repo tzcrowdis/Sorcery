@@ -11,6 +11,7 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "SorceryPlayerController.h"
 
@@ -117,6 +118,9 @@ void ASorceryCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+
+	AController* controller = GetController();
+	SorceryController = Cast<ASorceryPlayerController>(controller);
 
 	// element select collider functions
 	ElementSelectCollider->OnComponentBeginOverlap.AddDynamic(this, &ASorceryCharacter::ElementSelectOverlapBegin);
@@ -225,6 +229,8 @@ void ASorceryCharacter::Dash()
 	LaunchCharacter(DashVector * DashVelocity, false, false);
 	DashCount++;
 
+	DashSound();
+
 	// soft timer to reset dash count when player doesnt hit max dash count
 	if (DashCount > 0 && DashCount < DashMaxCount)
 	{
@@ -242,8 +248,9 @@ void ASorceryCharacter::Dash()
 
 		GetWorldTimerManager().SetTimer(DashCooldownTimer, this, &ASorceryCharacter::ClearDashCooldown, DashCooldownTime);
 		bDashCooldownActive = true;
-		print("dash cooldown active");
 	}
+
+	SorceryController->UpdateDashIcons(DashMaxCount - DashCount, bDashCooldownActive);
 }
 
 void ASorceryCharacter::ResetDashCount()
@@ -251,6 +258,7 @@ void ASorceryCharacter::ResetDashCount()
 	GetWorldTimerManager().ClearTimer(DashResetTimer);
 	bDashResetTimerActive = false;
 	DashCount = 0;
+	SorceryController->UpdateDashIcons(DashMaxCount - DashCount, bDashCooldownActive);
 }
 
 void ASorceryCharacter::ClearDashCooldown()
@@ -258,14 +266,11 @@ void ASorceryCharacter::ClearDashCooldown()
 	GetWorldTimerManager().ClearTimer(DashCooldownTimer);
 	DashCount = 0;
 	bDashCooldownActive = false;
-	print("dash cooldown cleared");
+	SorceryController->UpdateDashIcons(DashMaxCount - DashCount, bDashCooldownActive);
 }
 
 void ASorceryCharacter::ToggleSkillsMenu()
 {
-	// TODO consider getting player controller reference from the start
-	AController* controller = GetController();
-	ASorceryPlayerController* SorceryController = Cast<ASorceryPlayerController>(controller);
 	SorceryController->ToggleSkillsMenu();
 	
 	switch (ActiveSpell)

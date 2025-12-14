@@ -37,4 +37,7 @@ public:
 	// UI functions
 	UFUNCTION(BlueprintImplementableEvent, Category = "UI")
 	void ToggleSkillsMenu();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "UI")
+	void UpdateDashIcons(int RemainingDashes, bool CooldownActivated);
 };

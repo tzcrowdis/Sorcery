@@ -101,6 +101,8 @@ class ASorceryCharacter : public ACharacter
 	class ATracerSpell* TracerSpell;
 
 protected:
+	class ASorceryPlayerController* SorceryController;
+	
 	/* Dash */
 	int DashCount;
 	FTimerHandle DashCooldownTimer;
@@ -253,6 +255,9 @@ protected:
 	void Dash();
 	void ClearDashCooldown();
 	void ResetDashCount();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void DashSound();
 
 	/* Health Regen */
 	void RegenHealth();
