@@ -46,6 +46,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	float AttackSpeed;
 
+	// spell sound
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
+	class UAudioComponent* SpellSound;
+
 public:	
 	// Sets default values for this actor's properties
 	ASpell();
@@ -66,6 +70,9 @@ protected:
 	void ApplyModifiers(AActor* TargetActor);
 
 	void ApplyDamageToEnemy(AEnemy* Enemy, UPrimitiveComponent* EnemyComp, float HitDamage, AActor* DamageCauser, TSubclassOf<UDamageType> DamageTypeClass);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayProjectileDeathSound();
 
 public:	
 	// Called every frame

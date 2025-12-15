@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
 
 /*
 	SETUP FUNCTIONS	
@@ -15,6 +16,9 @@ ALaserSpell::ALaserSpell()
 {
 	LaserComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("LaserSpell"));
 	RootComponent = LaserComp;
+
+	SpellSound = CreateDefaultSubobject<UAudioComponent>(TEXT("SpellSound"));
+	SpellSound->SetupAttachment(RootComponent);
 
 	MaxLaserDistance = 5000.f;
 }
@@ -96,13 +100,8 @@ void ALaserSpell::ShootLaser(UCameraComponent* PlayerCamera)
 		}
 	}
 
-	/*
-	// Try and play the sound if specified
-	if (FireSound != nullptr)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
-	}
-	*/
+	// Try and play the sound
+	SpellSound->Play();
 }
 
 void ALaserSpell::TickLaser()
@@ -155,4 +154,5 @@ void ALaserSpell::DeactivateLaser()
 	// disable the laser component
 	LaserComp->Deactivate();
 	bLaserFiring = false;
+	SpellSound->Stop();
 }

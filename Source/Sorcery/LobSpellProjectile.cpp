@@ -97,4 +97,6 @@ void ALobSpellProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		ECollisionChannel::ECC_Visibility
 	);
 	*/
+
+	PlayProjectileDeathSound();
 }

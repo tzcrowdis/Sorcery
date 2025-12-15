@@ -115,6 +115,8 @@ void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 		if (!Enemy)
 			SpawnHitEffect(Hit.Normal);
 	}
+
+	PlayProjectileDeathSound(); // NOTE temp
 }
 
 void ASorceryProjectile::ChangeElementalType(EElementalType NewType)
@@ -196,4 +198,6 @@ void ASorceryProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			DeathEffect->SetColorParameter(FName("DeathColor"), DarkColor);
 			break;
 	}
+
+	PlayProjectileDeathSound();
 }

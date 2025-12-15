@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Enemy.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/AudioComponent.h"
 
 
 AElementThrowerSpell::AElementThrowerSpell()
@@ -14,6 +15,9 @@ AElementThrowerSpell::AElementThrowerSpell()
 	
 	DamageSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DamageComp"));
 	DamageSphere->SetupAttachment(RootComponent);
+
+	SpellSound = CreateDefaultSubobject<UAudioComponent>(TEXT("SpellSound"));
+	SpellSound->SetupAttachment(RootComponent);
 	
 	bThrowing = false;
 
@@ -67,6 +71,7 @@ void AElementThrowerSpell::ShootThrowerSpell(ASorceryCharacter* Sorcerer)
 	ElementThrowerComp->Activate();
 	//ElementThrowerComp->SetBoolParameter(FName("LocalSpace"), true);
 	ApplyThrowerDamage();
+	SpellSound->Play();
 }
 
 void AElementThrowerSpell::ApplyThrowerDamage()
@@ -101,4 +106,5 @@ void AElementThrowerSpell::DeactivateThrowerSpell()
 	bThrowing = false;
 	ElementThrowerComp->Deactivate();
 	//ElementThrowerComp->SetBoolParameter(FName("LocalSpace"), false);
+	SpellSound->Stop();
 }

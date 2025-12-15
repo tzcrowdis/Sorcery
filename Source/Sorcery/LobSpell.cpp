@@ -3,11 +3,15 @@
 
 #include "LobSpell.h"
 #include "SorceryProjectile.h"
+#include "Components/AudioComponent.h"
 
 ALobSpell::ALobSpell()
 {
 	MuzzleFlashComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MuzzleFlashEffect"));
 	RootComponent = MuzzleFlashComp;
+
+	SpellSound = CreateDefaultSubobject<UAudioComponent>(TEXT("SpellSound"));
+	SpellSound->SetupAttachment(RootComponent);
 
 	bShootCooldownActive = false;
 }
@@ -92,13 +96,8 @@ void ALobSpell::ShootLobSpell(ASorceryCharacter* Sorcerer)
 		}
 	}
 
-	/*
-	// Try and play the sound if specified
-	if (FireSound != nullptr)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
-	}
-	*/
+	// Try and play the sound
+	SpellSound->Play();
 }
 
 void ALobSpell::ClearShootCooldown()

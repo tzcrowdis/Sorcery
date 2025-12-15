@@ -3,6 +3,7 @@
 
 #include "ElementalBallSpell.h"
 #include "SorceryProjectile.h"
+#include "Components/AudioComponent.h"
 
 /*
 	ADMIN
@@ -11,6 +12,9 @@ AElementalBallSpell::AElementalBallSpell()
 {
 	MuzzleFlashComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("MuzzleFlashEffect"));
 	RootComponent = MuzzleFlashComp;
+
+	SpellSound = CreateDefaultSubobject<UAudioComponent>(TEXT("SpellSound"));
+	SpellSound->SetupAttachment(RootComponent);
 
 	bShootCooldownActive = false;
 }
@@ -100,13 +104,8 @@ void AElementalBallSpell::ShootElementalBall(ASorceryCharacter* Sorcerer)
 		}
 	}
 
-	/*
-	// Try and play the sound if specified
-	if (FireSound != nullptr)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, Character->GetActorLocation());
-	}
-	*/
+	// Try and play the sound
+	SpellSound->Play();
 }
 
 void AElementalBallSpell::ClearShootCooldown()
