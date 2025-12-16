@@ -116,7 +116,7 @@ void ASorceryProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor,
 			SpawnHitEffect(Hit.Normal);
 	}
 
-	PlayProjectileDeathSound(); // NOTE temp
+	PlayProjectileHitSound();
 }
 
 void ASorceryProjectile::ChangeElementalType(EElementalType NewType)

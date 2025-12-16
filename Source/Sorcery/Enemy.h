@@ -140,4 +140,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UMaterialInterface* GetDamageFlashMaterial(UDamageType* ElementType, bool CriticalHit);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Sounds")
+	void PlayHitSound();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Sounds")
+	void PlayDeathSound();
 };

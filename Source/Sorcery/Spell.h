@@ -72,6 +72,9 @@ protected:
 	void ApplyDamageToEnemy(AEnemy* Enemy, UPrimitiveComponent* EnemyComp, float HitDamage, AActor* DamageCauser, TSubclassOf<UDamageType> DamageTypeClass);
 
 	UFUNCTION(BlueprintImplementableEvent)
+	void PlayProjectileHitSound();
+
+	UFUNCTION(BlueprintImplementableEvent)
 	void PlayProjectileDeathSound();
 
 public:	

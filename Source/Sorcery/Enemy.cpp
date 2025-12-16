@@ -117,6 +117,10 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 		Health = 0.f;
 		Die(DamageCauser, DamageType);
 	}
+	else
+	{
+		PlayHitSound();
+	}
 
 	DrawFloatingDamageText();
 	ApplyDamageFlash(DamageType);
@@ -197,5 +201,7 @@ void AEnemy::Die(AActor* DeathCauser, UDamageType* DamageType)
 	else if (DamageType->IsA(UDT_Acid::StaticClass()))
 		DeathEffectComp->SetColorParameter(FName("SparksColor"), AcidColor);
 	
+	PlayDeathSound();
+
 	Destroy();
 }
