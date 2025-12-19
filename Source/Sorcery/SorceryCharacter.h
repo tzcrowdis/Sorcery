@@ -282,6 +282,12 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateSpellStats();
+
+	UFUNCTION(BlueprintCallable)
+	void UpdateDashCount();
+
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	virtual float TakeDamage
 	(

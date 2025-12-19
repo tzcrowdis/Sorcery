@@ -47,11 +47,6 @@ void AUpgradePickup::Tick(float DeltaTime)
 
 }
 
-void AUpgradePickup::ApplyUpgrade(ASorceryCharacter* Sorcerer)
-{
-	// overwritten by children
-}
-
 void AUpgradePickup::PickupSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(OtherActor);

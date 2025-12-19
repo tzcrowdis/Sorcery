@@ -272,7 +272,11 @@ void ASorceryCharacter::ClearDashCooldown()
 void ASorceryCharacter::ToggleSkillsMenu()
 {
 	SorceryController->ToggleSkillsMenu();
-	
+	UpdateSpellStats();
+}
+
+void ASorceryCharacter::UpdateSpellStats()
+{
 	switch (ActiveSpell)
 	{
 		case ESpellEquipped::ElementalBall:
@@ -289,17 +293,24 @@ void ASorceryCharacter::ToggleSkillsMenu()
 			LobSpell->UpdateDamage(DamagePercent);
 			LobSpell->UpdateAttackSpeed(AttackSpeedPercent);
 			break;
-		
+
 		case ESpellEquipped::Thrower:
 			ThrowerSpell->UpdateDamage(DamagePercent);
 			ThrowerSpell->UpdateAttackSpeed(AttackSpeedPercent);
 			break;
-		
+
 		case ESpellEquipped::Tracer:
 			TracerSpell->UpdateDamage(DamagePercent);
 			TracerSpell->UpdateAttackSpeed(AttackSpeedPercent);
 			break;
 	}
+}
+
+void ASorceryCharacter::UpdateDashCount()
+{
+	// NOTE wouldn't let me do this in BP
+	ResetDashCount();
+	SorceryController->UpdateDashIcons(DashMaxCount, false);
 }
 
 /*

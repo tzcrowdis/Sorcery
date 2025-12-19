@@ -36,7 +36,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	// unique function for each upgrade
-	virtual void ApplyUpgrade(ASorceryCharacter* Sorcerer);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup")
+	void ApplyUpgrade(ASorceryCharacter* Sorcerer);
 
 public:	
 	// Called every frame
