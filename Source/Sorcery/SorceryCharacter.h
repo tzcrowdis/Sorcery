@@ -101,6 +101,7 @@ class ASorceryCharacter : public ACharacter
 	class ATracerSpell* TracerSpell;
 
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class ASorceryPlayerController* SorceryController;
 	
 	/* Dash */
