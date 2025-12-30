@@ -259,6 +259,9 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void DashSound();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void DashCameraEffect();
+
 	/* Health Regen */
 	void RegenHealth();
 

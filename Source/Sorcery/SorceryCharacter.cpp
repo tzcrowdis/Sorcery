@@ -226,10 +226,14 @@ void ASorceryCharacter::Dash()
 	FVector DashVector = GetPendingMovementInputVector();
 	DashVector.Z = 0.f;
 	DashVector.Normalize();
-	LaunchCharacter(DashVector * DashVelocity, false, false);
+	if (!DashVector.IsNearlyZero())
+		LaunchCharacter(DashVector * DashVelocity, false, false);
+	else
+		LaunchCharacter(RootComponent->GetForwardVector() * DashVelocity, false, false);
 	DashCount++;
 
 	DashSound();
+	DashCameraEffect();
 
 	// soft timer to reset dash count when player doesnt hit max dash count
 	if (DashCount > 0 && DashCount < DashMaxCount)
