@@ -50,11 +50,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
 	class UAudioComponent* SpellSound;
 
+	// owning character
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	class ASorceryCharacter* OwningSorcerer;
+
 public:	
 	// Sets default values for this actor's properties
 	ASpell();
 
-	virtual void EquipSpell(EElementalType ElementType, float DamagePercent, float AttackSpeedPercent);
+	virtual void EquipSpell(EElementalType ElementType, float DamagePercent, float AttackSpeedPercent, ASorceryCharacter* Sorcerer);
 
 protected:
 	// Called when the game starts or when spawned

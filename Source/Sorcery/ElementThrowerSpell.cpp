@@ -6,6 +6,7 @@
 #include "Enemy.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/AudioComponent.h"
+#include "SorceryCharacter.h"
 
 
 AElementThrowerSpell::AElementThrowerSpell()
@@ -87,6 +88,9 @@ void AElementThrowerSpell::ApplyThrowerDamage()
 			ApplyDamageToEnemy(Enemy, nullptr, Damage, this, GetDamageType());
 		}
 	}
+
+	if (OwningSorcerer != nullptr)
+		OwningSorcerer->ShootEffect();
 	
 	GetWorldTimerManager().SetTimer(ShootCooldownTimer, this, &AElementThrowerSpell::ClearShootCooldown, AttackSpeed);
 	bShootCooldownActive = true;

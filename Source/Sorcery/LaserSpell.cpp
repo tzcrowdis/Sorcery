@@ -147,6 +147,9 @@ void ALaserSpell::ApplyLaserDamage()
 	{
 		HitResult.GetComponent()->AddImpulseAtLocation(HitResult.ImpactNormal * -100.0f, HitResult.ImpactPoint);
 	}
+
+	if (OwningSorcerer != nullptr)
+		OwningSorcerer->ShootEffect();
 }
 
 void ALaserSpell::DeactivateLaser()

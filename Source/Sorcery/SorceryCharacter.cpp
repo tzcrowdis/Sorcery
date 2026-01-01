@@ -413,32 +413,32 @@ void ASorceryCharacter::EquipSpell(ESpellEquipped NewSpell)
 		case ESpellEquipped::ElementalBall:
 			ElementalBallSpell = GetWorld()->SpawnActor<AElementalBallSpell>(ElementalBallSpellClass);
 			ElementalBallSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-			ElementalBallSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent);
+			ElementalBallSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent, this);
 			break;
 
 		case ESpellEquipped::Laser:
 			LaserSpell = GetWorld()->SpawnActor<ALaserSpell>(LaserSpellClass);
 			LaserSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-			LaserSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent);
+			LaserSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent, this);
 			break;
 
 		case ESpellEquipped::Lob:
 			LobSpell = GetWorld()->SpawnActor<ALobSpell>(LobSpellClass);
 			LobSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-			LobSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent);
+			LobSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent, this);
 			break;
 		
 		case ESpellEquipped::Thrower:
 			ThrowerSpell = GetWorld()->SpawnActor<AElementThrowerSpell>(ThrowerSpellClass);
 			ThrowerSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 			ThrowerSpell->SetActorRotation(ThrowerSpell->GetSpellOrientation(FirstPersonCameraComponent));
-			ThrowerSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent);
+			ThrowerSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent, this);
 			break;
 		
 		case ESpellEquipped::Tracer:
 			TracerSpell = GetWorld()->SpawnActor<ATracerSpell>(TracerSpellClass);
 			TracerSpell->AttachToComponent(SpellAttachPoint, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-			TracerSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent);
+			TracerSpell->EquipSpell(ActiveElement, DamagePercent, AttackSpeedPercent, this);
 			break;
 	}
 }

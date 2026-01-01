@@ -80,6 +80,9 @@ void ATracerSpell::SpawnTracer()
 		MuzzleFlashComp->SetWorldRotation(ConeDirection.Rotation());
 		MuzzleFlashComp->Activate();
 	}
+
+	if (OwningSorcerer != nullptr)
+		OwningSorcerer->ShootEffect();
 }
 
 void ATracerSpell::ClearShootCooldown()

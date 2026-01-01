@@ -125,6 +125,7 @@ protected:
 	FVector SelectedElementScale;
 
 	/* Element Wheel Type */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EElementalType ActiveElement;
 
 	/* Equipped Spell */
@@ -310,6 +311,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Spells")
 	void ReleaseSpell();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShootEffect();
 
 	/** Element Wheel Timeline Functions */
 	UFUNCTION(BlueprintCallable, Category = "Element Wheel")

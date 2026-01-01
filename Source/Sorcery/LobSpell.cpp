@@ -98,6 +98,9 @@ void ALobSpell::ShootLobSpell(ASorceryCharacter* Sorcerer)
 
 	// Try and play the sound
 	SpellSound->Play();
+
+	if (OwningSorcerer != nullptr)
+		OwningSorcerer->ShootEffect();
 }
 
 void ALobSpell::ClearShootCooldown()

@@ -106,6 +106,9 @@ void AElementalBallSpell::ShootElementalBall(ASorceryCharacter* Sorcerer)
 
 	// Try and play the sound
 	SpellSound->Play();
+
+	if (OwningSorcerer != nullptr)
+		OwningSorcerer->ShootEffect();
 }
 
 void AElementalBallSpell::ClearShootCooldown()

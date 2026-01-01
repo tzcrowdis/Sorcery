@@ -37,12 +37,13 @@ void ASpell::Tick(float DeltaTime)
 
 }
 
-void ASpell::EquipSpell(EElementalType ElementType, float DamagePercent, float AttackSpeedPercent)
+void ASpell::EquipSpell(EElementalType ElementType, float DamagePercent, float AttackSpeedPercent, ASorceryCharacter* Sorcerer)
 {
 	ChangeElementalType(ElementType);
 	UpdateDamage(DamagePercent);
 	UpdateAttackSpeed(AttackSpeedPercent);
 	UpdateReticle();
+	OwningSorcerer = Sorcerer;
 }
 
 FHitResult ASpell::GetAimHitResult(UCameraComponent* PlayerCamera, float MaxAimDistance)
