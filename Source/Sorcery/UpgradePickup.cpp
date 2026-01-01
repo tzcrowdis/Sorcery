@@ -53,6 +53,7 @@ void AUpgradePickup::PickupSphereBeginOverlap(UPrimitiveComponent* OverlappedCom
 	if (Sorcerer)
 	{
 		ApplyUpgrade(Sorcerer);
+		Sorcerer->UpgradePickedUp();
 		Destroy();
 	}
 }

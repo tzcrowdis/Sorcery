@@ -354,5 +354,9 @@ public:
 	/* Modifiers */
 	UFUNCTION(BlueprintCallable, Category = "Modifiers")
 	void ApplyAllModifiers(AActor* TargetActor, UClass* DamageType, FLinearColor ElementColor);
+
+	/* Upgrades */
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpgradePickedUp();
 };
 
