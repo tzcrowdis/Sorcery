@@ -58,7 +58,9 @@ void ATurretEnemy::SpawnHomingProjectile()
 		UWorld* const World = GetWorld();
 		if (World != nullptr)
 		{
-			const FVector SpawnLocation = ProjectileSpawnPoint->GetComponentLocation();
+			FVector SpawnLocationNoise = FMath::VRand() * 10.f;
+			SpawnLocationNoise.Z = 0.f;
+			const FVector SpawnLocation = ProjectileSpawnPoint->GetComponentLocation() + SpawnLocationNoise;
 			const FRotator SpawnRotation = ProjectileSpawnPoint->GetUpVector().Rotation();
 
 			//Set Spawn Collision Handling Override

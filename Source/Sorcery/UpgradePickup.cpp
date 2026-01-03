@@ -11,11 +11,11 @@ AUpgradePickup::AUpgradePickup()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	UpgradeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("UpgradeMesh"));
-	SetRootComponent(UpgradeMesh);
-
 	PickupSphere = CreateDefaultSubobject<USphereComponent>(TEXT("PickupSphere"));
-	PickupSphere->SetupAttachment(RootComponent);
+	SetRootComponent(PickupSphere);
+
+	UpgradeMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("UpgradeMesh"));
+	UpgradeMesh->SetupAttachment(RootComponent);
 
 	SpawnEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("SpawnEffect"));
 	SpawnEffect->SetupAttachment(RootComponent);

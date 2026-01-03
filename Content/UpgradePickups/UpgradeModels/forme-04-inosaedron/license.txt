@@ -1,0 +1,11 @@
+Model Information:
+* title:	FORME-04-Inosaedron
+* source:	https://sketchfab.com/3d-models/forme-04-inosaedron-55890070a7884059a572631c3f75c36a
+* author:	NooN-collective (https://sketchfab.com/NooNcollective)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "FORME-04-Inosaedron" (https://sketchfab.com/3d-models/forme-04-inosaedron-55890070a7884059a572631c3f75c36a) by NooN-collective (https://sketchfab.com/NooNcollective) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

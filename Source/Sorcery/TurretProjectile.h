@@ -26,7 +26,7 @@ class SORCERY_API ATurretProjectile : public AActor
 	USphereComponent* CollisionComp;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
-	UStaticMeshComponent* SphereMesh;
+	UStaticMeshComponent* Mesh;
 
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))

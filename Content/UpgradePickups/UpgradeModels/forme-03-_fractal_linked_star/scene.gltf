@@ -1,0 +1,236 @@
+{
+  "accessors": [
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 65532,
+      "max": [
+        0.03126101568341255,
+        0.03061598166823387,
+        0.034504130482673645
+      ],
+      "min": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 786384,
+      "componentType": 5126,
+      "count": 65532,
+      "max": [
+        0.999985933303833,
+        0.9999873638153076,
+        0.9999119639396667
+      ],
+      "min": [
+        -0.9999726414680481,
+        -0.9999980330467224,
+        -0.9996687173843384
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 375258,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 1572768,
+      "componentType": 5126,
+      "count": 38113,
+      "max": [
+        0.031243648380041122,
+        0.030586592853069305,
+        0.03412431478500366
+      ],
+      "min": [
+        6.074272096157074e-05,
+        2.9585324227809906e-05,
+        0.0005255844444036484
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 2030124,
+      "componentType": 5126,
+      "count": 38113,
+      "max": [
+        0.9999426007270813,
+        0.9999997615814209,
+        0.9999119639396667
+      ],
+      "min": [
+        -0.9999321103096008,
+        -0.9999797344207764,
+        -0.9996581673622131
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 1501032,
+      "componentType": 5125,
+      "count": 177702,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "NooN-collective (https://sketchfab.com/NooNcollective)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/forme-03-fractal-linked-star-382afb308aaf4dc3be3ea77d071e0843",
+      "title": "FORME-03- Fractal Linked Star"
+    },
+    "generator": "Sketchfab-12.67.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 2211840,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 2487480,
+      "byteOffset": 2211840,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 4699320,
+      "uri": "scene.bin"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "material_0",
+      "pbrMetallicRoughness": {
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.6
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Object_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0
+          },
+          "indices": 2,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "Object_1",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 4,
+            "POSITION": 3
+          },
+          "indices": 5,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        124.04090118408203,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.7542612897964343e-14,
+        -124.04090118408203,
+        0.0,
+        0.0,
+        124.04090118408203,
+        2.7542612897964343e-14,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.015607784502208233,
+        -0.015306740067899227,
+        -0.01725206896662712,
+        1.0
+      ],
+      "name": "ba83a4b905a34b8e8a0d2339b948a22d.lwo.cleaner.gles"
+    },
+    {
+      "children": [
+        3
+      ],
+      "name": "/sketchfab-data/processing/f5269dcc9af6433ca83acb3beadf8659/preprocess/ba83a4b905a34b8e8a0d2339b948a22d.lwo"
+    },
+    {
+      "children": [
+        4,
+        5
+      ],
+      "name": "Fractal_Linked_Star"
+    },
+    {
+      "mesh": 0,
+      "name": "Object_4"
+    },
+    {
+      "mesh": 1,
+      "name": "Object_5"
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

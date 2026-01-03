@@ -1,0 +1,11 @@
+Model Information:
+* title:	FORME-03- Fractal Linked Star
+* source:	https://sketchfab.com/3d-models/forme-03-fractal-linked-star-382afb308aaf4dc3be3ea77d071e0843
+* author:	NooN-collective (https://sketchfab.com/NooNcollective)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "FORME-03- Fractal Linked Star" (https://sketchfab.com/3d-models/forme-03-fractal-linked-star-382afb308aaf4dc3be3ea77d071e0843) by NooN-collective (https://sketchfab.com/NooNcollective) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

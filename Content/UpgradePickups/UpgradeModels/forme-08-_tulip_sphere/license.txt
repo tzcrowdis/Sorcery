@@ -1,0 +1,11 @@
+Model Information:
+* title:	FORME-08- Tulip Sphere
+* source:	https://sketchfab.com/3d-models/forme-08-tulip-sphere-468262c276584206a77df7a019e7e504
+* author:	NooN-collective (https://sketchfab.com/NooNcollective)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "FORME-08- Tulip Sphere" (https://sketchfab.com/3d-models/forme-08-tulip-sphere-468262c276584206a77df7a019e7e504) by NooN-collective (https://sketchfab.com/NooNcollective) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
