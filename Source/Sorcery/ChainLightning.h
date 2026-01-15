@@ -56,4 +56,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void DelayedDestroy();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayLightningSound();
+
 };

@@ -20,6 +20,8 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 
+#include "Components/AudioComponent.h"
+
 // Sets default values
 AEnemy::AEnemy()
 {
@@ -39,6 +41,9 @@ AEnemy::AEnemy()
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
 	HealthBar->SetupAttachment(RootComponent);
+
+	EnemyAmbientAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("EnemyAmbientAudio"));
+	EnemyAmbientAudio->SetupAttachment(RootComponent);
 
 	DamageResistancePercent = 0.8f;
 

@@ -45,6 +45,10 @@ class SORCERY_API AEnemy : public ACharacter
 	UPROPERTY(EditAnywhere, Category = "Element Color")
 	FLinearColor DarkColor;
 
+	/* audio */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds", meta = (AllowPrivateAccess = "true"))
+	class UAudioComponent* EnemyAmbientAudio;
+
 protected:
 	/* Elemental Weakness */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Elements", meta = (AllowPrivateAccess = "true"))

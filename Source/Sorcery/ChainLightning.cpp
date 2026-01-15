@@ -61,6 +61,7 @@ void AChainLightning::ApplyChainLightning(AActor* AttachedEnemy, UClass* DamageT
 	{
 		SpawnLightningEffect(DamageableActors[i]->GetActorLocation(), ElementColor);
 		ApplyLightningDamage(DamageableActors[i], DamageType);
+		PlayLightningSound();
 		
 		if (ChainQuantityDepth > 0)
 			SpawnChildLightning(DamageableActors[i], DamageType, ElementColor, AttachedEnemy);
