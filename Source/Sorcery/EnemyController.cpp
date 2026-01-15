@@ -6,6 +6,9 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 
+#include "SpiderEnemy.h"
+#include "MeleeEnemy.h"
+
 AEnemyController::AEnemyController()
 {
 	BlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackBoardComp"));

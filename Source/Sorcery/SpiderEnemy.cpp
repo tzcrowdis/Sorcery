@@ -24,7 +24,8 @@ void ASpiderEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	// NOTE multiplayer problem
+	ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)); 
 	if (Sorcerer)
 		EnemyController->GetBlackboard()->SetValueAsObject(TEXT("TargetActor"), Sorcerer);
 }

@@ -39,6 +39,11 @@ void AStarEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// NOTE multiplayer problem
+	ASorceryCharacter* Sorcerer = Cast<ASorceryCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Sorcerer)
+		LastPlayerTargeted = Sorcerer; // otherwise they arent a threat until the player engages
+	
 	EnterRecoverState();
 }
 
