@@ -33,6 +33,8 @@ AStarEnemy::AStarEnemy()
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AStarEnemy::OnHit);
 
 	Damage = 5.f;
+
+	bPreviouslyAttacking = false;
 }
 
 void AStarEnemy::BeginPlay()
@@ -92,6 +94,9 @@ void AStarEnemy::AttackSphereBeginOverlap(UPrimitiveComponent* OverlappedCompone
 	{
 		PlayerTarget = Sorcerer;
 		LastPlayerTargeted = Sorcerer;
+
+		if (!bPreviouslyAttacking)
+			EnterAttackState();
 	}
 }
 
@@ -107,6 +112,7 @@ void AStarEnemy::AttackSphereEndOverlap(UPrimitiveComponent* OverlappedComponent
 void AStarEnemy::EnterAttackState()
 {
 	bAttacking = true;
+	bPreviouslyAttacking = true;
 	
 	WeakSpotComp->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 
@@ -156,6 +162,9 @@ void AStarEnemy::RecoveryPositionBeginOverlap(UPrimitiveComponent* OverlappedCom
 	}
 
 	SetRecoverPosition();
+
+	if (bPreviouslyAttacking)
+		bPreviouslyAttacking = false;
 }
 
 void AStarEnemy::StartAttackCooldown()

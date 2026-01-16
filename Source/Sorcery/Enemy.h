@@ -33,16 +33,16 @@ class SORCERY_API AEnemy : public ACharacter
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	UNiagaraSystem* DeathEffect;
 
-	UPROPERTY(EditAnywhere, Category = "Element Color")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Element Color", meta = (AllowPrivateAccess = "true"))
 	FLinearColor FireColor;
 
-	UPROPERTY(EditAnywhere, Category = "Element Color")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Element Color", meta = (AllowPrivateAccess = "true"))
 	FLinearColor ShockColor;
 
-	UPROPERTY(EditAnywhere, Category = "Element Color")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Element Color", meta = (AllowPrivateAccess = "true"))
 	FLinearColor AcidColor;
 
-	UPROPERTY(EditAnywhere, Category = "Element Color")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Element Color", meta = (AllowPrivateAccess = "true"))
 	FLinearColor DarkColor;
 
 	/* audio */

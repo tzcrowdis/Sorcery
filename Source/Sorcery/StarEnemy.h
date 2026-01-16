@@ -69,6 +69,9 @@ class SORCERY_API AStarEnemy : public AEnemy
 
 	bool AttackCooldownActive;
 
+	
+	bool bPreviouslyAttacking;
+
 protected:
 	virtual void BeginPlay() override;
 
