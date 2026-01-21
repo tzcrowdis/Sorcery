@@ -178,11 +178,11 @@ void ASorceryCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(EquipElementalBall, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::ElementalBall);
 		EnhancedInputComponent->BindAction(EquipLaser, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Laser);
 		EnhancedInputComponent->BindAction(EquipLob, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Lob);
-		EnhancedInputComponent->BindAction(EquipThrower, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Thrower);
-		EnhancedInputComponent->BindAction(EquipTracer, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Tracer);
+		//EnhancedInputComponent->BindAction(EquipThrower, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Thrower);
+		//EnhancedInputComponent->BindAction(EquipTracer, ETriggerEvent::Triggered, this, &ASorceryCharacter::EquipSpell, ESpellEquipped::Tracer);
 	
 		// Open Skills Menu
-		EnhancedInputComponent->BindAction(SkillsMenuAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ToggleSkillsMenu);
+		//EnhancedInputComponent->BindAction(SkillsMenuAction, ETriggerEvent::Triggered, this, &ASorceryCharacter::ToggleSkillsMenu);
 	}
 	else
 	{
